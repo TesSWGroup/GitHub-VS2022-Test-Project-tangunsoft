@@ -23,4 +23,11 @@ jobs:
         # 이 단계에서 실행할 명령어를 지정합니다. 여기서는 "Hello World"를 출력합니다.
         run: echo "Hello World"
 
+      - name: 여러 명령어 문장 작성하기
+        # 이 단계에서 실행할 명령어를 지정합니다. 여러 명령어를 세미콜론으로 구분하여 작성합니다.
+        run: |
+          echo "Hello World"
+          echo "Good "
+          echo "Morning"
+
 
