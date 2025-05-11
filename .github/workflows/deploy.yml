@@ -11,8 +11,7 @@ on:
   pull_request:
     branches:
       - main
-#  schedule:
-#    - cron: '0 0 * * 0'  # 매주 일요일 정기 실행 (선택)
+
 
 # 워크플로 실행의 작업을 정의합니다.
 jobs:
@@ -68,7 +67,10 @@ jobs:
       # 솔루션 빌드 (정적 분석 대상이 되는 C++ 빌드)
       - name: Visual Studio 프로젝트 빌드
         run: |
-          msbuild GitHub_VS2022_Test_Project.sln /p:Configuration=Release
+          $msbuildPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
+            -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          & "$msbuildPath" GitHub_VS2022_Test_Project.sln /p:Configuration=Release
+        shell: pwsh
 
       # CodeQL 정적 분석 실행
       - name: CodeQL 분석 실행
