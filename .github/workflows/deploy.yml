@@ -34,7 +34,13 @@ jobs:
         run: |
           echo "Repository: $env:GITHUB_REPOSITORY"
           echo "SHA: $env:GITHUB_SHA"
+      # 아무한테 노출이 되면 안되는값 출력하기 
+      - name: GitHub Actions 비밀변수 출력
+        run: |
+          echo ${{"Secret: $env:MY_NAME}}
+          echo ${{"Secret: $env:MY_HOBBY}}
 
+        
 
 
 
