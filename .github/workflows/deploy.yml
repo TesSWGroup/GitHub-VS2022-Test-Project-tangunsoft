@@ -29,12 +29,12 @@ jobs:
           echo "Hello World"
           echo "Good "
           echo "Morning"
-
-      - name: GitHub Actions 자체에 있는 변수 사용해보기
-        # $GITHUB_HSA, $GITHUB_REPOSITORY 변수 출력하기
+      # Windows에서는 $ENV:환경변수명 형태로 출력해야 함
+      - name: GitHub Actions 변수 출력
         run: |
-          echo $GITHUB_HSA
-          echo $GITHUB_REPOSITORY
+          echo "Repository: $env:GITHUB_REPOSITORY"
+          echo "SHA: $env:GITHUB_SHA"
+
 
 
 
