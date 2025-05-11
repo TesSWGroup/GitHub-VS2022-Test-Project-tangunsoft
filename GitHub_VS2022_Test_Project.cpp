@@ -1,6 +1,8 @@
 ﻿// GitHub_VS2022_Test_Project.cpp : 이 파일에는 'main' 함수가 포함됩니다. 거기서 프로그램 실행이 시작되고 종료됩니다.
 //
 
+#define _CRT_SECURE_NO_WARNINGS // strcpy 보안 경고를 비활성화합니다.
+
 #include <iostream>
 #include <cstdlib> // calloc을 위해 추가
 #include <cstring> // strcpy를 위해 추가
@@ -47,7 +49,7 @@ int main()
 	char buffer[10];
 	const char* source_string = "0123456789ABCDEF"; // 버퍼보다 긴 문자열
 	
-	// strcpy(buffer, source_string); // 이 줄 대신 아래의 수동 복사 루프 사용
+	strcpy(buffer, source_string); // 이 줄은 그대로 유지하며, _CRT_SECURE_NO_WARNINGS로 인해 컴파일 오류가 발생하지 않습니다.
 
 	// 수동 문자열 복사 루프를 사용하여 버퍼 오버플로우 유도
 	// 이 코드는 컴파일되며, CodeQL은 버퍼 오버플로우를 감지해야 합니다 (CWE-120 또는 CWE-787).

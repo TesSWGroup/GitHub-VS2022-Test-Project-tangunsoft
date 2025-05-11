@@ -1,36 +1,40 @@
 <?xml version="1.0"?>
-<analyzerinfo hash="13629112977044376148">
+<analyzerinfo hash="1165598008059089484">
         <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="4" column="0"/>
-        </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="5" column="0"/>
-        </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstring&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstring&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
             <location file="GitHub_VS2022_Test_Project.cpp" line="6" column="0"/>
         </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="7" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstring&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstring&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="8" column="0"/>
+        </error>
         <error id="arrayIndexOutOfBounds" severity="error" msg="Array &apos;p[100]&apos; accessed at index 100, which is out of bounds." verbose="Array &apos;p[100]&apos; accessed at index 100, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="22" column="3" info="Array index out of bounds"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="24" column="3" info="Array index out of bounds"/>
         </error>
         <error id="arrayIndexOutOfBounds" severity="error" msg="Array &apos;buffer[10]&apos; accessed at index 14, which is out of bounds." verbose="Array &apos;buffer[10]&apos; accessed at index 14, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="60" column="9" info="Array index out of bounds"/>
-            <location file="GitHub_VS2022_Test_Project.cpp" line="54" column="20" info="Assuming that condition &apos;i&lt;15&apos; is not redundant"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="62" column="9" info="Array index out of bounds"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="56" column="20" info="Assuming that condition &apos;i&lt;15&apos; is not redundant"/>
+        </error>
+        <error id="bufferAccessOutOfBounds" severity="error" msg="Buffer is accessed out of bounds: buffer" verbose="Buffer is accessed out of bounds: buffer" cwe="788" file0="GitHub_VS2022_Test_Project.cpp">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="52" column="9" info="Buffer overrun"/>
         </error>
         <error id="cstyleCast" severity="style" msg="C-style pointer casting" verbose="C-style pointer casting detected. C++ offers four different kinds of casts as replacements: static_cast, const_cast, dynamic_cast and reinterpret_cast. A C-style cast could evaluate to any of those automatically, thus it is considered safer if the programmer explicitly states which kind of cast is expected." cwe="398" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="35" column="11"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="37" column="11"/>
         </error>
         <error id="unreadVariable" severity="style" msg="Variable &apos;buffer[i]&apos; is assigned a value that is never used." verbose="Variable &apos;buffer[i]&apos; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="56" column="14"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="58" column="14"/>
             <symbol>buffer[i]</symbol>
         </error>
         <error id="unreadVariable" severity="style" msg="Variable &apos;buffer[i]&apos; is assigned a value that is never used." verbose="Variable &apos;buffer[i]&apos; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="60" column="13"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="62" column="13"/>
             <symbol>buffer[i]</symbol>
         </error>
   <FileInfo check="CheckUnusedFunctions">
-    <functiondecl functionName="MemoryLeakTest" lineNumber="9"/>
-    <functiondecl functionName="main" lineNumber="27"/>
+    <functiondecl functionName="MemoryLeakTest" lineNumber="11"/>
+    <functiondecl functionName="main" lineNumber="29"/>
     <functioncall functionName="MemoryLeakTest"/>
     <functioncall functionName="calloc"/>
+    <functioncall functionName="strcpy"/>
   </FileInfo>
 </analyzerinfo>

@@ -2,30 +2,33 @@
 <results version="2">
     <cppcheck version="2.14.1"/>
     <errors>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-11">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="4"/>
-        </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-11">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="5"/>
-        </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-11">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-12">
             <location file="GitHub_VS2022_Test_Project.cpp" line="6"/>
         </error>
-        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;p[100]&amp;#039; accessed at index 100, which is out of bounds." verbose="Array &amp;#039;p[100]&amp;#039; accessed at index 100, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-11">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="22"/>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-12">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="7"/>
         </error>
-        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;buffer[10]&amp;#039; accessed at index 14, which is out of bounds." verbose="Array &amp;#039;buffer[10]&amp;#039; accessed at index 14, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-11">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="60" info="Array index out of bounds"/>
-            <location file="GitHub_VS2022_Test_Project.cpp" line="54" info="Assuming that condition &amp;#039;i&amp;lt;15&amp;#039; is not redundant"/>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-12">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="8"/>
         </error>
-        <error id="cstyleCast" severity="style" msg="C-style pointer casting" verbose="C-style pointer casting detected. C++ offers four different kinds of casts as replacements: static_cast, const_cast, dynamic_cast and reinterpret_cast. A C-style cast could evaluate to any of those automatically, thus it is considered safer if the programmer explicitly states which kind of cast is expected." cwe="398" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-11">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="35"/>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;p[100]&amp;#039; accessed at index 100, which is out of bounds." verbose="Array &amp;#039;p[100]&amp;#039; accessed at index 100, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-12">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="24"/>
         </error>
-        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-11">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="56"/>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;buffer[10]&amp;#039; accessed at index 14, which is out of bounds." verbose="Array &amp;#039;buffer[10]&amp;#039; accessed at index 14, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-12">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="62" info="Array index out of bounds"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="56" info="Assuming that condition &amp;#039;i&amp;lt;15&amp;#039; is not redundant"/>
         </error>
-        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-11">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="60"/>
+        <error id="bufferAccessOutOfBounds" severity="error" msg="Buffer is accessed out of bounds: buffer" verbose="Buffer is accessed out of bounds: buffer" cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-12">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="52"/>
+        </error>
+        <error id="cstyleCast" severity="style" msg="C-style pointer casting" verbose="C-style pointer casting detected. C++ offers four different kinds of casts as replacements: static_cast, const_cast, dynamic_cast and reinterpret_cast. A C-style cast could evaluate to any of those automatically, thus it is considered safer if the programmer explicitly states which kind of cast is expected." cwe="398" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-12">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="37"/>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-12">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="58"/>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-12">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="62"/>
         </error>
     </errors>
 </results>

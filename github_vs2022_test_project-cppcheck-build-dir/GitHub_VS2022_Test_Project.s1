@@ -1,2 +1,2 @@
 MemoryLeakTest
-main call:[MemoryLeakTest,calloc,sizeof]
+main call:[MemoryLeakTest,calloc,sizeof,strcpy]
