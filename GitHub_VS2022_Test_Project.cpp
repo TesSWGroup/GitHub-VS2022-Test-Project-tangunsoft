@@ -6,6 +6,14 @@
 int main()
 {
     std::cout << "GitHub_VS2022_Test_Project!\n";
+
+    // 메모리 해제 하지 않도록 테스트
+	int* p = new int[100];
+	for (int i = 0; i < 100; i++)
+	{
+		p[i] = i;
+		std::cout << p[i] << " ";
+	}
 }
 
 // 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴
