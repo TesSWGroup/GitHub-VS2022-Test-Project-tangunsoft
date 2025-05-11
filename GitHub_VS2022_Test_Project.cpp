@@ -3,17 +3,41 @@
 
 #include <iostream>
 
-int main()
-{
-    std::cout << "GitHub_VS2022_Test_Project!\n";
 
-    // 메모리 해제 하지 않도록 테스트
+void MemoryLeakTest()
+{
+	std::cout << "MemoryLeakTest begin\n" << std::endl;
+	// 메모리 해제 하지 않도록 테스트
 	int* p = new int[100];
 	for (int i = 0; i < 100; i++)
 	{
 		p[i] = i;
 		std::cout << p[i] << " ";
 	}
+	std::cout << "\n";
+	//delete[] p; // 메모리 해제 일부러 하지 않음
+
+	p[100] = 200; // 메모리 접근 오류 발생
+
+	std::cout << "MemoryLeakTest end\n" << std::endl;
+}
+
+int main()
+{
+    std::cout << "GitHub_VS2022_Test_Project!\n";
+
+	MemoryLeakTest();
+
+    // 메모리 해제 하지 않도록 테스트
+	// 아래코드를 calloc 방식으로 수정해서 테스트 하도록 변경해줘.
+	int* p = (int*)calloc(sizeof(int), 100); // calloc 방식으로 메모리 할당
+	for (int i = 0; i < 100; i++)
+	{
+		p[i] = i;
+		std::cout << p[i] << " ";
+	}
+
+	
 }
 
 // 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴
