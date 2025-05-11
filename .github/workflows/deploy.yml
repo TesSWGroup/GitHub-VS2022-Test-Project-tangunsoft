@@ -1,0 +1,16 @@
+name: GitHub Actions 실행시켜보기
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  My-Deloy-Job:
+    runs-on: windows-latest
+    
+    steps:
+      - name: Hello World 찍기
+        rub: echo "Hello World"
+
+        
