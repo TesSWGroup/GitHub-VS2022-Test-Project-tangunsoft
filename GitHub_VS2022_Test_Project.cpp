@@ -2,6 +2,8 @@
 //
 
 #include <iostream>
+#include <cstdlib> // calloc을 위해 추가
+#include <cstring> // strcpy를 위해 추가
 
 
 void MemoryLeakTest()
@@ -31,13 +33,42 @@ int main()
     // 메모리 해제 하지 않도록 테스트
 	// 아래코드를 calloc 방식으로 수정해서 테스트 하도록 변경해줘.
 	int* p = (int*)calloc(sizeof(int), 100); // calloc 방식으로 메모리 할당
-	for (int i = 0; i < 100; i++)
-	{
-		p[i] = i;
-		std::cout << p[i] << " ";
+	if (p != nullptr) { // nullptr 체크 추가
+		for (int i = 0; i < 100; i++)
+		{
+			p[i] = i;
+			std::cout << p[i] << " ";
+		}
+		std::cout << "\n";
+		// free(p); // 메모리 누수 테스트를 위해 의도적으로 해제하지 않음
 	}
 
+	// CodeQL이 감지하는 버퍼 오버플로우 코드 추가
+	char buffer[10];
+	const char* source_string = "0123456789ABCDEF"; // 버퍼보다 긴 문자열
 	
+	// strcpy(buffer, source_string); // 이 줄 대신 아래의 수동 복사 루프 사용
+
+	// 수동 문자열 복사 루프를 사용하여 버퍼 오버플로우 유도
+	// 이 코드는 컴파일되며, CodeQL은 버퍼 오버플로우를 감지해야 합니다 (CWE-120 또는 CWE-787).
+	for (int i = 0; i < 15; ++i) { // buffer의 크기는 10이지만, 15번 반복하여 오버플로우 발생 시도
+		if (source_string[i] == '\0') { // 소스 문자열이 예상보다 짧을 경우 루프 종료
+			buffer[i] = '\0'; // 현재 위치에 널 문자 삽입 (만약 버퍼 내라면)
+			break;
+		}
+		// i가 9를 초과하면 buffer의 경계를 벗어나 쓰기를 시도합니다.
+		buffer[i] = source_string[i]; 
+	}
+	// 루프가 완료된 후 buffer는 오버플로우되었을 가능성이 높습니다.
+	// 또한, source_string의 길이가 15보다 짧다면, 루프는 source_string의 경계를 넘어 읽으려고 시도할 수도 있습니다 (CWE-125).
+	// 이 예제에서는 source_string이 충분히 길어 주로 버퍼 쓰기 오버플로우가 발생합니다.
+	
+	// 오버플로우된 버퍼를 사용하려고 하면 예기치 않은 동작이나 충돌이 발생할 수 있습니다.
+	// std::cout << "Buffer content (potentially overflowed): " << buffer << std::endl; // 이 줄은 주석 처리하거나 주의해서 사용
+
+	std::cout << "Buffer overflow test added using manual loop." << std::endl;
+	
+	return 0; // main 함수에 반환 값 추가
 }
 
 // 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴
