@@ -151,19 +151,19 @@ jobs:
           # 규칙 정보 수집 및 추가
           $uniqueRules = @{}
           if ($xml.results.errors) {
-              foreach ($error in $xml.results.errors.error) {
-                  if (-not $uniqueRules.ContainsKey($error.id)) {
-                      $uniqueRules[$error.id] = @{
-                          id = $error.id
-                          name = $error.id
+              foreach ($cppcheckError in $xml.results.errors.error) {
+                  if (-not $uniqueRules.ContainsKey($cppcheckError.id)) {
+                      $uniqueRules[$cppcheckError.id] = @{
+                          id = $cppcheckError.id
+                          name = $cppcheckError.id
                           shortDescription = @{
-                              text = $error.msg
+                              text = $cppcheckError.msg
                           }
                           fullDescription = @{
-                              text = $error.verbose
+                              text = $cppcheckError.verbose
                           }
                           defaultConfiguration = @{
-                              level = if ($error.severity -eq "error") { "error" } else { "warning" }
+                              level = if ($cppcheckError.severity -eq "error") { "error" } else { "warning" }
                           }
                       }
                   }
@@ -173,21 +173,21 @@ jobs:
 
           # 분석 결과 변환
           if ($xml.results.errors) {
-              foreach ($error in $xml.results.errors.error) {
+              foreach ($cppcheckError in $xml.results.errors.error) {
                   # 파일 경로 정규화
-                  $filePath = $error.location.file.Replace("\", "/")
+                  $filePath = $cppcheckError.location.file.Replace("\", "/")
                   if ($filePath.StartsWith("./")) {
                       $filePath = $filePath.Substring(2)
                   }
                   
                   # 해시 생성
-                  $locationHash = "{0}:{1}" -f $filePath, $error.location.line
+                  $locationHash = "{0}:{1}" -f $filePath, $cppcheckError.location.line
                   
                   $result = @{
-                      ruleId = $error.id
-                      level = if ($error.severity -eq "error") { "error" } else { "warning" }
+                      ruleId = $cppcheckError.id
+                      level = if ($cppcheckError.severity -eq "error") { "error" } else { "warning" }
                       message = @{
-                          text = $error.verbose
+                          text = $cppcheckError.verbose
                       }
                       locations = @(
                           @{
@@ -197,9 +197,9 @@ jobs:
                                       uriBaseId = "%SRCROOT%"
                                   }
                                   region = @{
-                                      startLine = [int]$error.location.line
+                                      startLine = [int]$cppcheckError.location.line
                                       startColumn = 1
-                                      endColumn = if ($error.location.column) { [int]$error.location.column } else { 80 }
+                                      endColumn = if ($cppcheckError.location.column) { [int]$cppcheckError.location.column } else { 80 }
                                   }
                               }
                           }
