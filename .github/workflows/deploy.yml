@@ -78,17 +78,113 @@ jobs:
         shell: cmd
         # Cppcheck로 코드를 분석하고 결과를 XML 파일로 저장합니다.
 
-      # Step 8: Cppcheck 결과를 SARIF로 변환
-      - name: Convert Cppcheck to SARIF
-        uses: cppcheck/cppcheck-sarif-converter@main
-        with:
-          input-file: cppcheck-result.xml
-          output-file: cppcheck-results.sarif
-        # Cppcheck의 XML 결과를 SARIF 형식으로 변환합니다.
+      # [수정된 부분 시작] XML을 SARIF로 변환하는 Python 스크립트 생성 및 실행
+      - name: Convert Cppcheck XML to SARIF
+        run: |
+          # Python 스크립트 생성
+          @'
+          import json
+          import sys
+          import xml.etree.ElementTree as ET
+          
+          def convert_to_sarif(xml_file, sarif_file):
+              # XML 파일 파싱
+              tree = ET.parse(xml_file)
+              root = tree.getroot()
+              
+              # SARIF 형식 생성
+              sarif = {
+                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                  "version": "2.1.0",
+                  "runs": [
+                      {
+                          "tool": {
+                              "driver": {
+                                  "name": "Cppcheck",
+                                  "version": root.find("cppcheck").get("version"),
+                                  "informationUri": "http://cppcheck.sourceforge.net",
+                                  "rules": []
+                              }
+                          },
+                          "results": []
+                      }
+                  ]
+              }
+              
+              # 규칙과 결과 수집
+              rules = {}
+              for error in root.findall(".//error"):
+                  error_id = error.get("id")
+                  if error_id not in rules:
+                      rules[error_id] = {
+                          "id": error_id,
+                          "name": error_id,
+                          "shortDescription": {
+                              "text": error.get("msg")
+                          },
+                          "fullDescription": {
+                              "text": error.get("verbose")
+                          },
+                          "defaultConfiguration": {
+                              "level": "error" if error.get("severity") == "error" else "warning"
+                          }
+                      }
+                  
+                  # 결과 추가
+                  for location in error.findall("location"):
+                      result = {
+                          "ruleId": error_id,
+                          "level": "error" if error.get("severity") == "error" else "warning",
+                          "message": {
+                              "text": error.get("verbose")
+                          },
+                          "locations": [
+                              {
+                                  "physicalLocation": {
+                                      "artifactLocation": {
+                                          "uri": location.get("file").replace("\\", "/")
+                                      },
+                                      "region": {
+                                          "startLine": int(location.get("line")),
+                                          "startColumn": int(location.get("column", 1)),
+                                          "endColumn": int(location.get("column", 80))
+                                      }
+                                  }
+                              }
+                          ]
+                      }
+                      sarif["runs"][0]["results"].append(result)
+              
+              # 규칙 추가
+              sarif["runs"][0]["tool"]["driver"]["rules"] = list(rules.values())
+              
+              # SARIF 파일 저장
+              with open(sarif_file, "w", encoding="utf-8") as f:
+                  json.dump(sarif, f, indent=2)
+          
+          if __name__ == "__main__":
+              convert_to_sarif("cppcheck-result.xml", "cppcheck-results.sarif")
+          '@ | Out-File -Encoding utf8 convert_to_sarif.py
+          
+          # Python 스크립트 실행
+          python convert_to_sarif.py
+          
+          # 변환 결과 확인
+          if (Test-Path "cppcheck-results.sarif") {
+              Write-Host "SARIF 파일이 성공적으로 생성되었습니다."
+              Get-Content "cppcheck-results.sarif" | Select-Object -First 10
+          } else {
+              Write-Error "SARIF 파일 생성 실패"
+              exit 1
+          }
+        shell: pwsh
+        # XML을 SARIF 형식으로 변환합니다.
 
       # Step 9: SARIF 결과 업로드
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        continue-on-error: true
         with:
           sarif_file: cppcheck-results.sarif
           category: Cppcheck
@@ -97,6 +193,7 @@ jobs:
       # Step 10: 분석 결과 아티팩트로 저장
       - name: Archive analysis results
         uses: actions/upload-artifact@v3
+        if: always()
         with:
           name: cppcheck-analysis
           path: |
