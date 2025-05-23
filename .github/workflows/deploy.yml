@@ -94,7 +94,6 @@ jobs:
         shell: pwsh
         # MSI 설치 파일을 직접 다운로드하여 설치합니다.
 
-      # [수정된 부분 시작]
       # Step 7: Cppcheck를 사용한 정적 코드 분석 실행
       - name: Cppcheck 정적 분석
         run: |
@@ -114,8 +113,8 @@ jobs:
           .
         shell: cmd
         # 일반 텍스트 결과와 함께 XML 형식의 결과도 생성합니다.
-        # XML 결과는 나중에 SARIF 형식으로 변환됩니다.
 
+      # [수정된 부분 시작]
       # Step 8: Cppcheck XML 결과를 SARIF 형식으로 변환
       - name: Cppcheck 결과를 SARIF로 변환
         run: |
@@ -161,16 +160,24 @@ jobs:
               $sarif.runs[0].results += $result
           }
 
-          ConvertTo-Json -InputObject $sarif -Depth 10 | Out-File "cppcheck-results.sarif"
+          # UTF-8로 인코딩하여 저장 (인코딩 문제 해결)
+          $sarifJson = ConvertTo-Json -InputObject $sarif -Depth 10
+          [System.IO.File]::WriteAllText("cppcheck-results.sarif", $sarifJson, [System.Text.Encoding]::UTF8)
           '@
 
-          # 스크립트를 파일로 저장하고 실행
-          Set-Content -Path "convert-to-sarif.ps1" -Value $sarifScript
+          # 스크립트를 UTF-8로 저장 (인코딩 문제 해결)
+          [System.IO.File]::WriteAllText("convert-to-sarif.ps1", $sarifScript, [System.Text.Encoding]::UTF8)
+
           if (Test-Path "cppcheck-results.xml") {
               Write-Host "Converting Cppcheck results to SARIF format..."
+              # 스크립트 실행
               powershell -File convert-to-sarif.ps1
               if (Test-Path "cppcheck-results.sarif") {
                   Write-Host "SARIF file created successfully"
+                  # 파일이 UTF-8로 저장되었는지 확인
+                  $content = Get-Content "cppcheck-results.sarif" -Raw
+                  Write-Host "SARIF file content preview:"
+                  Write-Host $content.Substring(0, [Math]::Min(100, $content.Length))
               } else {
                   Write-Error "Failed to create SARIF file"
                   exit 1
@@ -182,6 +189,8 @@ jobs:
         shell: pwsh
         # Cppcheck의 XML 결과를 GitHub Code Scanning에서 사용할 수 있는
         # SARIF 형식으로 변환합니다.
+        # UTF-8 인코딩을 사용하여 인코딩 문제를 해결했습니다.
+      # [수정된 부분 끝]
 
       # Step 9: SARIF 결과를 GitHub에 업로드
       - name: SARIF 결과 업로드
@@ -190,8 +199,6 @@ jobs:
           sarif_file: cppcheck-results.sarif
           category: Cppcheck
         # 변환된 SARIF 파일을 GitHub Code Scanning에 업로드합니다.
-        # 이렇게 하면 Security 탭에서 Cppcheck 결과를 확인할 수 있습니다.
-      # [수정된 부분 끝]
 
       # Step 10: Cppcheck 분석 결과를 아티팩트로 저장
       - name: Cppcheck 결과 저장
