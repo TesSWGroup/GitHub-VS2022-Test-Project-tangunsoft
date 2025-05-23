@@ -160,12 +160,21 @@ jobs:
           $uniqueRules = @{}
           if ($xml.results.errors) {
               Write-Host "에러 항목 발견..."
-              $errorNodes = $xml.results.errors.error
+              $errorNodes = @($xml.results.errors.error)
               Write-Host "에러 노드 수: $($errorNodes.Count)"
               
               foreach ($cppcheckError in $errorNodes) {
                   Write-Host "처리 중인 에러 ID: $($cppcheckError.id)"
                   if (-not $uniqueRules.ContainsKey($cppcheckError.id)) {
+                      $level = "none"
+                      switch ($cppcheckError.severity) {
+                          "error" { $level = "error" }
+                          "warning" { $level = "warning" }
+                          "style" { $level = "note" }
+                          "information" { $level = "note" }
+                          default { $level = "none" }
+                      }
+                      
                       $uniqueRules[$cppcheckError.id] = @{
                           id = $cppcheckError.id
                           name = $cppcheckError.id
@@ -176,7 +185,7 @@ jobs:
                               text = $cppcheckError.verbose
                           }
                           defaultConfiguration = @{
-                              level = $(if ($cppcheckError.severity -eq "error") { "error" } else { "warning" })
+                              level = $level
                           }
                       }
                   }
@@ -189,11 +198,21 @@ jobs:
 
           # 분석 결과 변환
           if ($xml.results.errors) {
-              foreach ($cppcheckError in $xml.results.errors.error) {
+              foreach ($cppcheckError in $errorNodes) {
                   # 파일 경로 정규화
                   $filePath = $cppcheckError.location.file.Replace("\", "/")
                   if ($filePath.StartsWith("./")) {
                       $filePath = $filePath.Substring(2)
+                  }
+                  
+                  # 심각도 레벨 결정
+                  $level = "none"
+                  switch ($cppcheckError.severity) {
+                      "error" { $level = "error" }
+                      "warning" { $level = "warning" }
+                      "style" { $level = "note" }
+                      "information" { $level = "note" }
+                      default { $level = "none" }
                   }
                   
                   # 해시 생성
@@ -201,7 +220,7 @@ jobs:
                   
                   $result = @{
                       ruleId = $cppcheckError.id
-                      level = $(if ($cppcheckError.severity -eq "error") { "error" } else { "warning" })
+                      level = $level
                       message = @{
                           text = $cppcheckError.verbose
                       }
@@ -215,7 +234,7 @@ jobs:
                                   region = @{
                                       startLine = [int]$cppcheckError.location.line
                                       startColumn = 1
-                                      endColumn = $(if ($cppcheckError.location.column) { [int]$cppcheckError.location.column } else { 80 })
+                                      endColumn = if ($cppcheckError.location.column) { [int]$cppcheckError.location.column } else { 80 }
                                   }
                               }
                           }
