@@ -2,7 +2,7 @@
 <Project>
   <ProjectOutputs>
     <ProjectOutput>
-      <FullPath>C:\D\github_actions_study\GitHub_VS2022_Test_Project\x64\Release\GitHub_VS2022_Test_Project.exe</FullPath>
+      <FullPath>D:\github_actions_study\GitHub_VS2022_Test_Project\x64\Release\GitHub_VS2022_Test_Project.exe</FullPath>
     </ProjectOutput>
   </ProjectOutputs>
   <ContentFiles />
