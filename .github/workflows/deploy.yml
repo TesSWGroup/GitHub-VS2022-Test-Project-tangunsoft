@@ -120,8 +120,14 @@ jobs:
           # SARIF 변환 스크립트 실행
           Add-Type -AssemblyName System.Web
           
-          # XML 파일 읽기
-          $xml = [xml](Get-Content "cppcheck-results.xml")
+          Write-Host "XML 파일 읽기 시작..."
+          # XML 파일 읽기 및 내용 확인
+          $xmlContent = Get-Content "cppcheck-results.xml" -Raw
+          Write-Host "XML 내용:"
+          Write-Host $xmlContent
+          
+          $xml = [xml]$xmlContent
+          Write-Host "XML 파싱 완료"
           
           # SARIF 객체 생성
           $sarif = @{
@@ -148,10 +154,17 @@ jobs:
               )
           }
 
+          Write-Host "XML 결과 처리 시작..."
+          
           # 규칙 정보 수집 및 추가
           $uniqueRules = @{}
           if ($xml.results.errors) {
-              foreach ($cppcheckError in $xml.results.errors.error) {
+              Write-Host "에러 항목 발견..."
+              $errorNodes = $xml.results.errors.error
+              Write-Host "에러 노드 수: $($errorNodes.Count)"
+              
+              foreach ($cppcheckError in $errorNodes) {
+                  Write-Host "처리 중인 에러 ID: $($cppcheckError.id)"
                   if (-not $uniqueRules.ContainsKey($cppcheckError.id)) {
                       $uniqueRules[$cppcheckError.id] = @{
                           id = $cppcheckError.id
@@ -163,13 +176,16 @@ jobs:
                               text = $cppcheckError.verbose
                           }
                           defaultConfiguration = @{
-                              level = if ($cppcheckError.severity -eq "error") { "error" } else { "warning" }
+                              level = $(if ($cppcheckError.severity -eq "error") { "error" } else { "warning" })
                           }
                       }
                   }
               }
+          } else {
+              Write-Host "에러 항목이 없습니다."
           }
-          $sarif.runs[0].tool.driver.rules = $uniqueRules.Values
+          
+          $sarif.runs[0].tool.driver.rules = @($uniqueRules.Values)
 
           # 분석 결과 변환
           if ($xml.results.errors) {
@@ -185,7 +201,7 @@ jobs:
                   
                   $result = @{
                       ruleId = $cppcheckError.id
-                      level = if ($cppcheckError.severity -eq "error") { "error" } else { "warning" }
+                      level = $(if ($cppcheckError.severity -eq "error") { "error" } else { "warning" })
                       message = @{
                           text = $cppcheckError.verbose
                       }
@@ -199,7 +215,7 @@ jobs:
                                   region = @{
                                       startLine = [int]$cppcheckError.location.line
                                       startColumn = 1
-                                      endColumn = if ($cppcheckError.location.column) { [int]$cppcheckError.location.column } else { 80 }
+                                      endColumn = $(if ($cppcheckError.location.column) { [int]$cppcheckError.location.column } else { 80 })
                                   }
                               }
                           }
@@ -212,13 +228,14 @@ jobs:
               }
           }
 
+          Write-Host "SARIF 변환 완료, 파일 저장 시도..."
+
           # SARIF 파일 저장 (UTF-8, BOM 없음)
           $utf8NoBOM = New-Object System.Text.UTF8Encoding $false
           $sarifJson = ConvertTo-Json -InputObject $sarif -Depth 10
           
           # 파일 저장 전 디렉토리 확인
           Write-Host "현재 작업 디렉토리: $pwd"
-          Write-Host "SARIF 파일 저장 시도..."
           
           try {
               [System.IO.File]::WriteAllText(
