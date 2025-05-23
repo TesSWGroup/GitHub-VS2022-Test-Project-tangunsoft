@@ -114,13 +114,16 @@ jobs:
         shell: cmd
         # 일반 텍스트 결과와 함께 XML 형식의 결과도 생성합니다.
 
-      # [수정된 부분 시작]
-      # Step 8: Cppcheck XML 결과를 SARIF 형식으로 변환
+      # [수정된 부분 시작] - SARIF 변환 스크립트 개선
       - name: Cppcheck 결과를 SARIF로 변환
         run: |
-          # SARIF 변환 스크립트 생성
-          $sarifScript = @'
+          # SARIF 변환 스크립트 실행
+          Add-Type -AssemblyName System.Web
+          
+          # XML 파일 읽기
           $xml = [xml](Get-Content "cppcheck-results.xml")
+          
+          # SARIF 객체 생성 (필수 필드 추가)
           $sarif = @{
               '$schema' = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
               version = "2.1.0"
@@ -129,16 +132,53 @@ jobs:
                       tool = @{
                           driver = @{
                               name = "Cppcheck"
-                              rules = @()
+                              version = "2.13.0"  # 버전 정보 추가
+                              informationUri = "https://cppcheck.sourceforge.io"  # 도구 정보 추가
+                              rules = @()  # 규칙 정보 저장소
                           }
                       }
                       results = @()
+                      invocations = @(  # 실행 정보 추가
+                          @{
+                              executionSuccessful = $true
+                              toolExecutionNotifications = @()
+                          }
+                      )
                   }
               )
           }
 
+          # 규칙 정보 수집 및 추가
+          $uniqueRules = @{}
           foreach ($error in $xml.results.errors.error) {
+              if (-not $uniqueRules.ContainsKey($error.id)) {
+                  $uniqueRules[$error.id] = @{
+                      id = $error.id
+                      name = $error.id
+                      shortDescription = @{
+                          text = $error.msg
+                      }
+                      fullDescription = @{
+                          text = $error.verbose
+                      }
+                      defaultConfiguration = @{
+                          level = if ($error.severity -eq "error") { "error" } else { "warning" }
+                      }
+                  }
+              }
+          }
+          $sarif.runs[0].tool.driver.rules = $uniqueRules.Values
+
+          # 분석 결과 변환
+          foreach ($error in $xml.results.errors.error) {
+              # 파일 경로 정규화
+              $filePath = $error.location.file.Replace("\", "/")
+              if ($filePath.StartsWith("./")) {
+                  $filePath = $filePath.Substring(2)
+              }
+              
               $result = @{
+                  ruleId = $error.id
                   level = if ($error.severity -eq "error") { "error" } else { "warning" }
                   message = @{
                       text = $error.verbose
@@ -147,66 +187,58 @@ jobs:
                       @{
                           physicalLocation = @{
                               artifactLocation = @{
-                                  uri = $error.location.file
+                                  uri = [System.Web.HttpUtility]::UrlPathEncode($filePath)
+                                  uriBaseId = "%SRCROOT%"
                               }
                               region = @{
                                   startLine = [int]$error.location.line
+                                  startColumn = 1
+                                  endColumn = if ($error.location.column) { [int]$error.location.column } else { 80 }
                               }
                           }
                       }
                   )
-                  ruleId = $error.id
+                  partialFingerprints = @{
+                      primaryLocationLineHash = "$filePath:$($error.location.line)"
+                  }
               }
               $sarif.runs[0].results += $result
           }
 
-          # UTF-8 (BOM 없음)으로 인코딩하여 저장
+          # SARIF 파일 저장 (UTF-8, BOM 없음)
           $utf8NoBOM = New-Object System.Text.UTF8Encoding $false
           [System.IO.File]::WriteAllText(
               "cppcheck-results.sarif",
               (ConvertTo-Json -InputObject $sarif -Depth 10),
               $utf8NoBOM
           )
-          '@
-
-          # 스크립트를 UTF-8 (BOM 없음)으로 저장
-          $utf8NoBOM = New-Object System.Text.UTF8Encoding $false
-          [System.IO.File]::WriteAllText("convert-to-sarif.ps1", $sarifScript, $utf8NoBOM)
-
-          if (Test-Path "cppcheck-results.xml") {
-              Write-Host "Converting Cppcheck results to SARIF format..."
-              # 스크립트 실행
-              powershell -File convert-to-sarif.ps1
-              if (Test-Path "cppcheck-results.sarif") {
-                  Write-Host "SARIF file created successfully"
-                  # 파일이 올바르게 저장되었는지 확인
-                  $content = [System.IO.File]::ReadAllText("cppcheck-results.sarif", $utf8NoBOM)
-                  Write-Host "SARIF file content preview:"
-                  Write-Host $content.Substring(0, [Math]::Min(100, $content.Length))
-              } else {
-                  Write-Error "Failed to create SARIF file"
-                  exit 1
-              }
+          
+          # 저장된 파일 확인
+          if (Test-Path "cppcheck-results.sarif") {
+              Write-Host "SARIF file created successfully"
+              Get-Content "cppcheck-results.sarif" | Select-Object -First 10
           } else {
-              Write-Error "Cppcheck XML results file not found"
+              Write-Error "Failed to create SARIF file"
               exit 1
           }
         shell: pwsh
-        # Cppcheck의 XML 결과를 GitHub Code Scanning에서 사용할 수 있는
-        # SARIF 형식으로 변환합니다.
-        # UTF-8 인코딩을 사용하되, BOM을 제거하여 JSON 파싱 오류를 해결했습니다.
+        # Cppcheck XML 결과를 GitHub Code Scanning이 이해할 수 있는 SARIF 형식으로 변환합니다.
+        # 개선된 버전은 더 자세한 규칙 정보와 위치 정보를 포함합니다.
       # [수정된 부분 끝]
 
-      # Step 9: SARIF 결과를 GitHub에 업로드
+      # [수정된 부분 시작] - SARIF 업로드 개선
       - name: SARIF 결과 업로드
         uses: github/codeql-action/upload-sarif@v3
+        if: always()  # 이전 단계가 실패해도 실행
         with:
           sarif_file: cppcheck-results.sarif
           category: Cppcheck
-        # 변환된 SARIF 파일을 GitHub Code Scanning에 업로드합니다.
+          wait-for-processing: true  # 처리 완료까지 대기
+      # [수정된 부분 끝]
 
       # Step 10: Cppcheck 분석 결과를 아티팩트로 저장
       - name: Cppcheck 결과 저장
+        if: always()  # 이전 단계가 실패해도 실행
         run: |
           if exist cppcheck_report.txt (
             type cppcheck_report.txt
