@@ -142,6 +142,11 @@ jobs:
                   
                   # 위치 정보 추가
                   for location in error.findall("location"):
+                      # column 값이 없거나 0인 경우 1로 설정
+                      column = location.get("column")
+                      if not column or int(column) < 1:
+                          column = "1"
+                          
                       result["locations"].append({
                           "physicalLocation": {
                               "artifactLocation": {
@@ -149,7 +154,7 @@ jobs:
                               },
                               "region": {
                                   "startLine": int(location.get("line")),
-                                  "startColumn": int(location.get("column")) if location.get("column") else 1
+                                  "startColumn": int(column)
                               }
                           }
                       })
