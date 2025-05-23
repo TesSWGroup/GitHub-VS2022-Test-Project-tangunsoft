@@ -1,4 +1,12 @@
-# `actions/upload-artifact` 액션에서 계속 에러가 발생하고 있습니다. 이번에는 다른 방식으로 아티팩트를 업로드하도록 수정해보겠습니다. 수정된 전체 workflow 파일입니다:
+# PowerShell에서 발생하는 명령줄 구문 오류를 다시 한번 수정해보겠습니다. 이번에는 cmd.exe를 사용하여 실행하도록 변경하겠습니다.
+
+# 수정되는 부분만 먼저 설명드리고, 전체 파일을 보여드리겠습니다:
+
+# 주요 수정사항:
+# - Cppcheck 실행 부분에서 `shell: pwsh`를 `shell: cmd`로 변경
+# - 명령어 구문을 Windows cmd 스타일로 수정
+
+# 전체 workflow 파일입니다:
 
 # 워크플로의 이름을 정의합니다. 이 이름은 GitHub의 Actions 탭에서 표시됩니다.
 name: GitHub Actions 실행시켜보기
@@ -52,8 +60,9 @@ jobs:
       # Step 4: GitHub에서 제공하는 환경 변수 출력
       - name: GitHub Actions 변수 출력
         run: |
-          echo "Repository: $env:GITHUB_REPOSITORY"  # 현재 저장소 이름
-          echo "SHA: $env:GITHUB_SHA"               # 현재 커밋의 SHA
+          echo "Repository: %GITHUB_REPOSITORY%"
+          echo "SHA: %GITHUB_SHA%"
+        shell: cmd
         # GitHub Actions에서 기본으로 제공하는 환경 변수들을 확인합니다.
 
       # Step 5: GitHub Secrets에 저장된 비밀 값 출력
@@ -62,8 +71,9 @@ jobs:
           MY_NAME: ${{ secrets.MY_NAME }}     # GitHub Secrets에 저장된 MY_NAME 값
           MY_HOBBY: ${{ secrets.MY_HOBBY }}   # GitHub Secrets에 저장된 MY_HOBBY 값
         run: |
-          echo "Secret: $env:MY_NAME"
-          echo "Secret: $env:MY_HOBBY"
+          echo "Secret: %MY_NAME%"
+          echo "Secret: %MY_HOBBY%"
+        shell: cmd
         # 민감한 정보를 안전하게 사용하는 방법을 보여줍니다.
 
       # Step 6: Cppcheck 도구 설치
@@ -72,43 +82,39 @@ jobs:
           choco install cppcheck
         shell: pwsh
         # chocolatey 패키지 관리자를 사용하여 Cppcheck를 설치합니다.
-        # Windows에서 사용할 수 있는 C/C++ 정적 분석 도구입니다.
-
-      # Step 7: Cppcheck를 사용한 정적 코드 분석 실행
-      - name: Cppcheck 정적 분석
-        run: |
-          cppcheck --enable=all `              # 모든 종류의 검사 활성화
-                  --suppress=missingInclude `  # 헤더 파일 누락 경고 제외
-                  --inline-suppr `            # 인라인 경고 억제 허용
-                  --inconclusive `            # 불확실한 문제도 보고
-                  --std=c++17 `               # C++17 표준 사용
-                  --output-file=cppcheck_report.txt .  # 결과를 파일로 저장
-        shell: pwsh
-        # 프로젝트의 모든 C++ 파일에 대해 정적 분석을 수행합니다.
 
       # [수정된 부분 시작]
-      # Step 8: Cppcheck 분석 결과를 아티팩트로 저장
-      # 이전 방식에서 문제가 발생하여 GitHub CLI를 사용하는 방식으로 변경합니다.
-      - name: Cppcheck 결과 저장
-        # PowerShell을 사용하여 결과 파일을 아티팩트로 저장합니다.
+      # Step 7: Cppcheck를 사용한 정적 코드 분석 실행
+      # PowerShell 대신 CMD를 사용하여 명령어 실행 문제 해결
+      - name: Cppcheck 정적 분석
         run: |
-          # 결과 파일이 존재하는지 확인
-          if (Test-Path cppcheck_report.txt) {
-              # 결과 파일 내용 출력 (로그 확인용)
-              Get-Content cppcheck_report.txt
-              
-              # 결과 파일을 artifacts 디렉토리로 복사
-              New-Item -ItemType Directory -Force -Path "artifacts"
-              Copy-Item cppcheck_report.txt -Destination "artifacts/"
-              
-              Write-Host "Cppcheck 분석 결과가 저장되었습니다."
-          } else {
-              Write-Host "Warning: Cppcheck 결과 파일을 찾을 수 없습니다."
-          }
-        shell: pwsh
-        # 이 방식은 actions/upload-artifact를 사용하지 않고 
-        # 직접 PowerShell 명령어로 파일을 처리합니다.
+          REM 모든 C++ 파일에 대해 Cppcheck 분석 실행
+          cppcheck ^
+          --enable=all ^
+          --suppress=missingInclude ^
+          --inline-suppr ^
+          --inconclusive ^
+          --std=c++17 ^
+          --output-file=cppcheck_report.txt ^
+          .
+        shell: cmd
+        # Windows CMD에서는 ^ 를 사용하여 줄 연속을 표시합니다.
+        # PowerShell 구문 오류를 피하기 위해 CMD 셸을 사용합니다.
       # [수정된 부분 끝]
+
+      # Step 8: Cppcheck 분석 결과를 아티팩트로 저장
+      - name: Cppcheck 결과 저장
+        run: |
+          if exist cppcheck_report.txt (
+            type cppcheck_report.txt
+            mkdir artifacts
+            copy cppcheck_report.txt artifacts\
+            echo "Cppcheck 분석 결과가 저장되었습니다."
+          ) else (
+            echo "Warning: Cppcheck 결과 파일을 찾을 수 없습니다."
+          )
+        shell: cmd
+        # CMD 명령어를 사용하여 결과 파일 처리
 
       # Step 9: CodeQL 분석 준비
       - name: CodeQL 초기화
@@ -135,13 +141,12 @@ jobs:
         # 결과는 GitHub의 Security 탭에서 확인할 수 있습니다.
 
 # 주요 변경사항 설명:
-# 1. `actions/upload-artifact` 액션을 제거하고 PowerShell 스크립트로 대체했습니다.
-# 2. 결과 파일을 직접 처리하는 방식으로 변경했습니다.
-# 3. 결과 파일의 존재 여부를 확인하고 내용을 로그에 출력하도록 했습니다.
+# 1. Cppcheck 실행 부분을 `shell: cmd`로 변경했습니다.
+# 2. 명령줄 연속 문자를 백틱(`)에서 캐럿(^)으로 변경했습니다.
+# 3. 결과 파일 처리 부분도 CMD 명령어로 변경했습니다.
+# 4. 환경 변수 참조 방식을 CMD 스타일(%VARIABLE%)로 변경했습니다.
 
-# 이 수정된 버전은:
-# - 외부 액션에 의존하지 않아 더 안정적입니다
-# - 결과를 로그에서 직접 확인할 수 있습니다
-# - 파일 처리 과정을 더 상세하게 확인할 수 있습니다
-
-# 이렇게 수정하면 이전에 발생하던 `actions/upload-artifact` 관련 에러를 피할 수 있습니다.
+# 이러한 변경으로:
+# - PowerShell 구문 오류가 해결됩니다
+# - Windows CMD에서 안정적으로 실행됩니다
+# - 명령어가 더 명확하게 실행됩니다
