@@ -38,57 +38,63 @@ jobs:
       - name: Visual Studio 개발 환경 설정
         uses: microsoft/setup-msbuild@v1.0.2
 
-      # Step 3: Visual Studio 솔루션 빌드
-      - name: 솔루션 빌드
-        run: |
-          msbuild /p:Configuration=Release
-
-      # Step 4: CodeQL 초기화
+      # [수정된 부분 시작] - CodeQL 분석을 위한 빌드 설정 수정
+      # Step 3: CodeQL 초기화
       - name: CodeQL 초기화
         uses: github/codeql-action/init@v3
         with:
           languages: cpp
           queries: security-and-quality
 
+      # Step 4: Visual Studio 솔루션 빌드 (CodeQL 추적 포함)
+      - name: 솔루션 빌드
+        run: |
+          # MSBuild 명령에 자세한 출력 옵션 추가
+          msbuild /p:Configuration=Release /v:detailed
+        env:
+          # CodeQL이 빌드 명령을 추적할 수 있도록 환경 변수 설정
+          CODEQL_EXTRACTOR_CPP_TRAP_CACHING: false
+          CODEQL_EXTRACTOR_CPP_VERBOSE: 1
+
       # Step 5: CodeQL 분석 실행
       - name: CodeQL 분석 실행
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:cpp"
+      # [수정된 부분 끝]
 
-      # [수정된 부분 시작] - Cppcheck 설치 및 실행 단계 추가
-      # Step 6: Cppcheck 설치 - MSI 인스톨러를 사용하여 자동 설치
+      # Step 6: Cppcheck 설치
       - name: Cppcheck 설치
         run: |
-          # 특정 버전(2.13.0)의 Cppcheck MSI 인스톨러 다운로드
+          # Cppcheck 다운로드 URL
           $url = "https://github.com/danmar/cppcheck/releases/download/2.13.0/cppcheck-2.13.0-x64-Setup.msi"
+          # 다운로드 파일 경로
           $output = "cppcheck-setup.msi"
+          # Cppcheck 다운로드
           Invoke-WebRequest -Uri $url -OutFile $output
-          # 자동 설치 실행 (/quiet /qn: 사용자 상호작용 없이 자동 설치)
+          # Cppcheck 설치 (자동 설치)
           Start-Process msiexec.exe -ArgumentList "/i $output /quiet /qn" -Wait
-          # 시스템 환경 변수 PATH 업데이트
+          # 환경 변수 업데이트
           $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
         shell: pwsh
 
-      # Step 7: Cppcheck 분석 실행 - XML 형식으로 결과 출력
+      # Step 7: Cppcheck 분석 실행
       - name: Cppcheck 분석 실행
         run: |
-          # --enable=all: 모든 검사 활성화
-          # --xml: XML 형식으로 출력
-          # --output-file: 결과를 파일로 저장
+          # 프로젝트 소스 파일 분석
           cppcheck --enable=all --xml --output-file=cppcheck-result.xml .
         shell: cmd
 
-      # Step 8: Python 설치 - XML을 SARIF로 변환하기 위해 필요
+      # Step 8: Python 설치 (SARIF 변환용)
       - name: Python 설치
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
-      # Step 9: XML을 SARIF로 변환 - GitHub Security 탭에서 결과를 보기 위해 필요
+      # Step 9: XML을 SARIF로 변환
       - name: XML을 SARIF로 변환
         run: |
-          # Python 스크립트 생성 - XML을 SARIF 형식으로 변환하는 스크립트
+          # Python 스크립트 생성
           @"
           import json
           import xml.etree.ElementTree as ET
@@ -100,7 +106,7 @@ jobs:
               tree = ET.parse(xml_file)
               root = tree.getroot()
               
-              # SARIF 2.1.0 형식의 기본 구조 생성
+              # SARIF 기본 구조 생성
               sarif_output = {
                   "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
                   "version": "2.1.0",
@@ -118,7 +124,7 @@ jobs:
                   ]
               }
               
-              # Cppcheck 결과를 SARIF 형식으로 변환
+              # 결과 변환
               for error in root.findall(".//error"):
                   result = {
                       "ruleId": error.get("id"),
@@ -129,7 +135,7 @@ jobs:
                       "locations": []
                   }
                   
-                  # 소스 코드 위치 정보 추가
+                  # 위치 정보 추가
                   for location in error.findall("location"):
                       result["locations"].append({
                           "physicalLocation": {
@@ -145,7 +151,7 @@ jobs:
                   
                   sarif_output["runs"][0]["results"].append(result)
               
-              # SARIF 파일 저장 (UTF-8 인코딩 사용)
+              # SARIF 파일 저장
               with open(sarif_file, "w", encoding="utf-8") as f:
                   json.dump(sarif_output, f, indent=2)
           
@@ -157,10 +163,9 @@ jobs:
           python convert_to_sarif.py
         shell: pwsh
 
-      # Step 10: SARIF 결과 업로드 - GitHub Security 탭에 결과 표시
+      # Step 10: SARIF 결과 업로드
       - name: SARIF 결과 업로드
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: cppcheck-results.sarif
           category: Cppcheck
-      # [수정된 부분 끝]
