@@ -160,13 +160,18 @@ jobs:
               $sarif.runs[0].results += $result
           }
 
-          # UTF-8로 인코딩하여 저장 (인코딩 문제 해결)
-          $sarifJson = ConvertTo-Json -InputObject $sarif -Depth 10
-          [System.IO.File]::WriteAllText("cppcheck-results.sarif", $sarifJson, [System.Text.Encoding]::UTF8)
+          # UTF-8 (BOM 없음)으로 인코딩하여 저장
+          $utf8NoBOM = New-Object System.Text.UTF8Encoding $false
+          [System.IO.File]::WriteAllText(
+              "cppcheck-results.sarif",
+              (ConvertTo-Json -InputObject $sarif -Depth 10),
+              $utf8NoBOM
+          )
           '@
 
-          # 스크립트를 UTF-8로 저장 (인코딩 문제 해결)
-          [System.IO.File]::WriteAllText("convert-to-sarif.ps1", $sarifScript, [System.Text.Encoding]::UTF8)
+          # 스크립트를 UTF-8 (BOM 없음)으로 저장
+          $utf8NoBOM = New-Object System.Text.UTF8Encoding $false
+          [System.IO.File]::WriteAllText("convert-to-sarif.ps1", $sarifScript, $utf8NoBOM)
 
           if (Test-Path "cppcheck-results.xml") {
               Write-Host "Converting Cppcheck results to SARIF format..."
@@ -174,8 +179,8 @@ jobs:
               powershell -File convert-to-sarif.ps1
               if (Test-Path "cppcheck-results.sarif") {
                   Write-Host "SARIF file created successfully"
-                  # 파일이 UTF-8로 저장되었는지 확인
-                  $content = Get-Content "cppcheck-results.sarif" -Raw
+                  # 파일이 올바르게 저장되었는지 확인
+                  $content = [System.IO.File]::ReadAllText("cppcheck-results.sarif", $utf8NoBOM)
                   Write-Host "SARIF file content preview:"
                   Write-Host $content.Substring(0, [Math]::Min(100, $content.Length))
               } else {
@@ -189,7 +194,7 @@ jobs:
         shell: pwsh
         # Cppcheck의 XML 결과를 GitHub Code Scanning에서 사용할 수 있는
         # SARIF 형식으로 변환합니다.
-        # UTF-8 인코딩을 사용하여 인코딩 문제를 해결했습니다.
+        # UTF-8 인코딩을 사용하되, BOM을 제거하여 JSON 파싱 오류를 해결했습니다.
       # [수정된 부분 끝]
 
       # Step 9: SARIF 결과를 GitHub에 업로드
