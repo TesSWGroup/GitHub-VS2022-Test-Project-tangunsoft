@@ -1,114 +1,132 @@
-# Read file: .github/workflows/deploy.yml
-# deploy.yml 파일의 각 섹션에 대해 자세히 설명해드리겠습니다. 이미 일부 주석이 있지만, 더 자세한 설명을 추가하겠습니다:
+# 네, 각 섹션과 단계별로 자세한 한글 주석을 추가한 workflow 파일입니다:
 
-# 워크플로의 이름을 정의합니다. GitHub Actions 탭에서 이 이름으로 워크플로를 식별할 수 있습니다.
+# 워크플로의 이름을 정의합니다. 이 이름은 GitHub의 Actions 탭에서 표시됩니다.
 name: GitHub Actions 실행시켜보기
 
-# 워크플로의 트리거 조건을 정의하는 섹션입니다.
+# 워크플로우가 실행될 조건을 지정합니다.
 on:
-  # 코드가 main 브랜치에 push될 때 워크플로가 실행됩니다.
+  # main 브랜치에 push가 발생할 때 실행됩니다.
   push:
     branches:
       - main
-  # main 브랜치로 pull request가 생성되거나 업데이트될 때도 워크플로가 실행됩니다.
+  # main 브랜치로 pull request가 생성되거나 업데이트될 때 실행됩니다.
   pull_request:
     branches:
       - main
 
-# 실제 실행될 작업들을 정의하는 섹션입니다.
+# 실제로 실행될 작업들을 정의합니다.
 jobs:
-  # "My-Deploy-Job"이라는 작업을 정의합니다.
-  My-Deloy-Job:
-    # 이 작업은 Windows 최신 버전의 가상 머신에서 실행됩니다.
+  # 'Build-And-Analysis'라는 이름의 작업을 정의합니다.
+  # 이 작업은 빌드와 다양한 코드 분석을 수행합니다.
+  Build-And-Analysis:
+    # Windows 최신 버전의 가상 환경에서 실행합니다.
+    # Visual Studio 2022와 관련 도구들이 미리 설치되어 있습니다.
     runs-on: windows-latest
 
-    # 작업에 필요한 권한을 설정합니다.
+    # GitHub Actions가 필요로 하는 권한들을 설정합니다.
     permissions:
-      actions: read      # GitHub Actions의 읽기 권한
-      contents: read     # 저장소 컨텐츠 읽기 권한
-      security-events: write  # 보안 이벤트 쓰기 권한
+      actions: read      # GitHub Actions의 실행 권한
+      contents: read     # 저장소 내용을 읽을 수 있는 권한
+      security-events: write  # 보안 검사 결과를 쓸 수 있는 권한
 
-    # 작업 내에서 순차적으로 실행될 단계들을 정의합니다.
+    # 순차적으로 실행될 단계들을 정의합니다.
     steps:
-      # 첫 번째 단계: 현재 저장소의 코드를 가져옵니다.
+      # Step 1: 저장소 코드를 가져옵니다.
       - name: 저장소 체크아웃
         uses: actions/checkout@v3
+        # 이 단계는 현재 저장소의 코드를 가상 환경으로 복사합니다.
 
-      # 간단한 테스트 출력을 실행합니다.
-      - name: Hello World 찍기
+      # Step 2: 기본 동작 테스트를 위한 Hello World 출력
+      - name: Hello World 출력
         run: echo "Hello World"
+        # 워크플로우가 정상적으로 실행되는지 확인하기 위한 기본 테스트입니다.
 
-      # 여러 줄의 명령어를 실행하는 예제입니다.
-      - name: 여러 명령어 문장 작성하기
+      # Step 3: 여러 줄의 명령어 실행 테스트
+      - name: 여러 명령어 실행
         run: |
           echo "Hello World"
           echo "Good "
           echo "Morning"
+        # 파이프라인(|)을 사용하여 여러 줄의 명령어를 실행하는 예제입니다.
 
-      # GitHub에서 제공하는 기본 환경 변수들을 출력합니다.
+      # Step 4: GitHub에서 제공하는 환경 변수 출력
       - name: GitHub Actions 변수 출력
         run: |
-          echo "Repository: $env:GITHUB_REPOSITORY"
-          echo "SHA: $env:GITHUB_SHA"
+          echo "Repository: $env:GITHUB_REPOSITORY"  # 현재 저장소 이름
+          echo "SHA: $env:GITHUB_SHA"               # 현재 커밋의 SHA
+        # GitHub Actions에서 기본으로 제공하는 환경 변수들을 확인합니다.
 
-      # GitHub Secrets에 저장된 비밀 값들을 안전하게 사용하는 예제입니다.
+      # Step 5: GitHub Secrets에 저장된 비밀 값 출력
       - name: GitHub Actions 비밀변수 출력
         env:
-          MY_NAME: ${{ secrets.MY_NAME }}
-          MY_HOBBY: ${{ secrets.MY_HOBBY }}
+          MY_NAME: ${{ secrets.MY_NAME }}     # GitHub Secrets에 저장된 MY_NAME 값
+          MY_HOBBY: ${{ secrets.MY_HOBBY }}   # GitHub Secrets에 저장된 MY_HOBBY 값
         run: |
           echo "Secret: $env:MY_NAME"
           echo "Secret: $env:MY_HOBBY"
+        # 민감한 정보를 안전하게 사용하는 방법을 보여줍니다.
 
-      # CodeQL 보안 분석을 위한 초기 설정을 수행합니다.
+      # Step 6: Cppcheck 도구 설치
+      - name: Cppcheck 설치
+        run: |
+          choco install cppcheck
+        shell: pwsh
+        # chocolatey 패키지 관리자를 사용하여 Cppcheck를 설치합니다.
+        # Windows에서 사용할 수 있는 C/C++ 정적 분석 도구입니다.
+
+      # Step 7: Cppcheck를 사용한 정적 코드 분석 실행
+      - name: Cppcheck 정적 분석
+        run: |
+          cppcheck --enable=all `              # 모든 종류의 검사 활성화
+                  --suppress=missingInclude `  # 헤더 파일 누락 경고 제외
+                  --inline-suppr `            # 인라인 경고 억제 허용
+                  --inconclusive `            # 불확실한 문제도 보고
+                  --std=c++17 `               # C++17 표준 사용
+                  --output-file=cppcheck_report.txt .  # 결과를 파일로 저장
+        shell: pwsh
+        # 프로젝트의 모든 C++ 파일에 대해 정적 분석을 수행합니다.
+
+      # Step 8: Cppcheck 분석 결과 저장
+      - name: Cppcheck 결과 업로드
+        uses: actions/upload-artifact@v2
+        with:
+          name: cppcheck-results           # 결과 파일의 이름
+          path: cppcheck_report.txt        # 업로드할 파일 경로
+        # 분석 결과를 GitHub Actions의 아티팩트로 저장합니다.
+        # 이후 UI에서 다운로드하여 확인할 수 있습니다.
+
+      # Step 9: CodeQL 분석 준비
       - name: CodeQL 초기화
         uses: github/codeql-action/init@v3
         with:
-          languages: cpp  # C++ 코드 분석을 위한 설정
+          languages: cpp    # C++ 언어 분석 설정
+        # GitHub의 강력한 코드 분석 도구인 CodeQL을 초기화합니다.
 
-      # Visual Studio 프로젝트를 빌드하는 단계입니다.
+      # Step 10: Visual Studio를 사용한 프로젝트 빌드
       - name: Visual Studio 프로젝트 빌드
         run: |
+          # Visual Studio의 MSBuild 도구 경로를 찾습니다.
           $msbuildPath = & "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" `
             -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          # 프로젝트를 Release 모드로 빌드합니다.
           & "$msbuildPath" GitHub_VS2022_Test_Project.sln /p:Configuration=Release
         shell: pwsh
+        # Visual Studio 프로젝트를 빌드하고, 이 과정에서 CodeQL이 코드를 분석합니다.
 
-      # CodeQL을 사용하여 코드 보안 분석을 실행합니다.
+      # Step 11: CodeQL 분석 실행
       - name: CodeQL 분석 실행
         uses: github/codeql-action/analyze@v3
+        # 빌드 중 수집된 데이터를 바탕으로 보안 취약점을 분석합니다.
+        # 결과는 GitHub의 Security 탭에서 확인할 수 있습니다.
 
-      # Cppcheck 정적 분석 실행
-      - name: Cppcheck 정적 분석
-        uses: deep5050/cppcheck-action@main
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # 모든 타입의 체크 활성화
-          enable: all
-          # 인라인 억제 기능 활성화
-          inline_suppression: enable
-          # 모든 설정 강제 체크
-          force: enable
-          # C++ 17 표준 사용
-          std: c++17
-          # 분석 결과 파일 위치
-          output_file: ./cppcheck_report.txt
-          # 불확실한 분석 결과도 포함
-          inconclusive: enable
-          
-      # Cppcheck 분석 결과 게시
-      - name: Cppcheck 결과 게시
-        uses: mikeal/publish-to-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH_NAME: 'main'
+# 이 workflow는 다음과 같은 주요 기능들을 수행합니다:
+# 1. 코드 체크아웃
+# 2. 기본 GitHub Actions 기능 테스트
+# 3. Cppcheck를 사용한 정적 코드 분석
+# 4. CodeQL을 사용한 보안 취약점 분석
+# 5. Visual Studio 프로젝트 빌드
 
-# 이 워크플로우 파일은 다음과 같은 주요 기능들을 수행합니다:
-
-# 1. main 브랜치에 push나 pull request가 발생할 때 자동으로 실행됩니다.
-# 2. Windows 환경에서 실행되며, 기본적인 echo 명령어로 테스트를 수행합니다.
-# 3. GitHub의 환경 변수와 비밀 값들을 사용하는 방법을 보여줍니다.
-# 4. CodeQL을 사용하여 C++ 코드의 보안 분석을 수행합니다.
-# 5. Visual Studio 프로젝트를 자동으로 빌드합니다.
-
-# 이 워크플로우는 코드 품질과 보안을 자동으로 검증하는 CI/CD 파이프라인의 좋은 예시입니다.
+# 각 단계는 실패하더라도 다음 단계가 실행되며, 모든 분석 결과는 GitHub에서 확인할 수 있습니다:
+# - Cppcheck 결과: Actions 탭의 아티팩트에서 다운로드
+# - CodeQL 결과: Security 탭에서 확인
+# - 빌드 결과: Actions 탭의 실행 로그에서 확인
