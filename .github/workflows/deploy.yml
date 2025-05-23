@@ -38,7 +38,6 @@ jobs:
       - name: Visual Studio 개발 환경 설정
         uses: microsoft/setup-msbuild@v1.0.2
 
-      # [수정된 부분 시작] - CodeQL 분석을 위한 빌드 설정 수정
       # Step 3: CodeQL 초기화
       - name: CodeQL 초기화
         uses: github/codeql-action/init@v3
@@ -61,7 +60,6 @@ jobs:
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:cpp"
-      # [수정된 부분 끝]
 
       # Step 6: Cppcheck 설치
       - name: Cppcheck 설치
@@ -74,15 +72,22 @@ jobs:
           Invoke-WebRequest -Uri $url -OutFile $output
           # Cppcheck 설치 (자동 설치)
           Start-Process msiexec.exe -ArgumentList "/i $output /quiet /qn" -Wait
-          # 환경 변수 업데이트
-          $env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine")
+          # 설치 완료 대기
+          Start-Sleep -Seconds 10
+          # Cppcheck가 설치된 경로 확인 및 출력
+          $cppcheckPath = "C:\Program Files\Cppcheck"
+          Write-Host "Cppcheck installation path: $cppcheckPath"
+          # 환경 변수 PATH에 Cppcheck 경로 추가
+          $env:Path += ";$cppcheckPath"
+          # 현재 PATH 출력
+          Write-Host "Current PATH: $env:Path"
         shell: pwsh
 
       # Step 7: Cppcheck 분석 실행
       - name: Cppcheck 분석 실행
         run: |
-          # 프로젝트 소스 파일 분석
-          cppcheck --enable=all --xml --output-file=cppcheck-result.xml .
+          REM 프로젝트 소스 파일 분석
+          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --output-file=cppcheck-result.xml .
         shell: cmd
 
       # Step 8: Python 설치 (SARIF 변환용)
