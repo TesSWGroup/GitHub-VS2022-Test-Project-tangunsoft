@@ -93,15 +93,15 @@ jobs:
           }
         shell: pwsh
         # MSI 설치 파일을 직접 다운로드하여 설치합니다.
-        # Chocolatey 대신 직접 설치 방식을 사용하여 네트워크 문제를 우회합니다.
 
+      # [수정된 부분 시작]
       # Step 7: Cppcheck를 사용한 정적 코드 분석 실행
       - name: Cppcheck 정적 분석
         run: |
           # Cppcheck 실행 경로 설정
           set PATH=C:\Program Files\Cppcheck;%PATH%
           
-          REM Cppcheck 실행
+          REM Cppcheck 실행 (일반 텍스트와 XML 형식으로 동시 출력)
           "C:\Program Files\Cppcheck\cppcheck.exe" ^
           --enable=all ^
           --suppress=missingInclude ^
@@ -109,32 +109,114 @@ jobs:
           --inconclusive ^
           --std=c++17 ^
           --output-file=cppcheck_report.txt ^
+          --template="{file}:{line}:{column}: {severity}:{id}:{message}" ^
+          --xml --xml-version=2 --output-file=cppcheck-results.xml ^
           .
         shell: cmd
-        # Cppcheck의 전체 경로를 지정하여 실행합니다.
+        # 일반 텍스트 결과와 함께 XML 형식의 결과도 생성합니다.
+        # XML 결과는 나중에 SARIF 형식으로 변환됩니다.
 
-      # Step 8: Cppcheck 분석 결과를 아티팩트로 저장
+      # Step 8: Cppcheck XML 결과를 SARIF 형식으로 변환
+      - name: Cppcheck 결과를 SARIF로 변환
+        run: |
+          # SARIF 변환 스크립트 생성
+          $sarifScript = @'
+          $xml = [xml](Get-Content "cppcheck-results.xml")
+          $sarif = @{
+              '$schema' = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
+              version = "2.1.0"
+              runs = @(
+                  @{
+                      tool = @{
+                          driver = @{
+                              name = "Cppcheck"
+                              rules = @()
+                          }
+                      }
+                      results = @()
+                  }
+              )
+          }
+
+          foreach ($error in $xml.results.errors.error) {
+              $result = @{
+                  level = if ($error.severity -eq "error") { "error" } else { "warning" }
+                  message = @{
+                      text = $error.verbose
+                  }
+                  locations = @(
+                      @{
+                          physicalLocation = @{
+                              artifactLocation = @{
+                                  uri = $error.location.file
+                              }
+                              region = @{
+                                  startLine = [int]$error.location.line
+                              }
+                          }
+                      }
+                  )
+                  ruleId = $error.id
+              }
+              $sarif.runs[0].results += $result
+          }
+
+          ConvertTo-Json -InputObject $sarif -Depth 10 | Out-File "cppcheck-results.sarif"
+          '@
+
+          # 스크립트를 파일로 저장하고 실행
+          Set-Content -Path "convert-to-sarif.ps1" -Value $sarifScript
+          if (Test-Path "cppcheck-results.xml") {
+              Write-Host "Converting Cppcheck results to SARIF format..."
+              powershell -File convert-to-sarif.ps1
+              if (Test-Path "cppcheck-results.sarif") {
+                  Write-Host "SARIF file created successfully"
+              } else {
+                  Write-Error "Failed to create SARIF file"
+                  exit 1
+              }
+          } else {
+              Write-Error "Cppcheck XML results file not found"
+              exit 1
+          }
+        shell: pwsh
+        # Cppcheck의 XML 결과를 GitHub Code Scanning에서 사용할 수 있는
+        # SARIF 형식으로 변환합니다.
+
+      # Step 9: SARIF 결과를 GitHub에 업로드
+      - name: SARIF 결과 업로드
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: cppcheck-results.sarif
+          category: Cppcheck
+        # 변환된 SARIF 파일을 GitHub Code Scanning에 업로드합니다.
+        # 이렇게 하면 Security 탭에서 Cppcheck 결과를 확인할 수 있습니다.
+      # [수정된 부분 끝]
+
+      # Step 10: Cppcheck 분석 결과를 아티팩트로 저장
       - name: Cppcheck 결과 저장
         run: |
           if exist cppcheck_report.txt (
             type cppcheck_report.txt
             mkdir artifacts
             copy cppcheck_report.txt artifacts\
+            copy cppcheck-results.xml artifacts\
+            copy cppcheck-results.sarif artifacts\
             echo "Cppcheck 분석 결과가 저장되었습니다."
           ) else (
             echo "Warning: Cppcheck 결과 파일을 찾을 수 없습니다."
           )
         shell: cmd
-        # CMD 명령어를 사용하여 결과 파일 처리
+        # 모든 결과 파일을 아티팩트로 저장합니다.
 
-      # Step 9: CodeQL 분석 준비
+      # Step 11: CodeQL 분석 준비
       - name: CodeQL 초기화
         uses: github/codeql-action/init@v3
         with:
           languages: cpp    # C++ 언어 분석 설정
         # GitHub의 강력한 코드 분석 도구인 CodeQL을 초기화합니다.
 
-      # Step 10: Visual Studio를 사용한 프로젝트 빌드
+      # Step 12: Visual Studio를 사용한 프로젝트 빌드
       - name: Visual Studio 프로젝트 빌드
         run: |
           # Visual Studio의 MSBuild 도구 경로를 찾습니다.
@@ -145,7 +227,7 @@ jobs:
         shell: pwsh
         # Visual Studio 프로젝트를 빌드하고, 이 과정에서 CodeQL이 코드를 분석합니다.
 
-      # Step 11: CodeQL 분석 실행
+      # Step 13: CodeQL 분석 실행
       - name: CodeQL 분석 실행
         uses: github/codeql-action/analyze@v3
         # 빌드 중 수집된 데이터를 바탕으로 보안 취약점을 분석합니다.
