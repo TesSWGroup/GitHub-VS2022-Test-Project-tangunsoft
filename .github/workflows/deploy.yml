@@ -123,7 +123,7 @@ jobs:
           # XML 파일 읽기
           $xml = [xml](Get-Content "cppcheck-results.xml")
           
-          # SARIF 객체 생성 (필수 필드 추가)
+          # SARIF 객체 생성
           $sarif = @{
               '$schema' = "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json"
               version = "2.1.0"
@@ -132,13 +132,13 @@ jobs:
                       tool = @{
                           driver = @{
                               name = "Cppcheck"
-                              version = "2.13.0"  # 버전 정보 추가
-                              informationUri = "https://cppcheck.sourceforge.io"  # 도구 정보 추가
-                              rules = @()  # 규칙 정보 저장소
+                              version = "2.13.0"
+                              informationUri = "https://cppcheck.sourceforge.io"
+                              rules = @()
                           }
                       }
                       results = @()
-                      invocations = @(  # 실행 정보 추가
+                      invocations = @(
                           @{
                               executionSuccessful = $true
                               toolExecutionNotifications = @()
@@ -150,19 +150,21 @@ jobs:
 
           # 규칙 정보 수집 및 추가
           $uniqueRules = @{}
-          foreach ($error in $xml.results.errors.error) {
-              if (-not $uniqueRules.ContainsKey($error.id)) {
-                  $uniqueRules[$error.id] = @{
-                      id = $error.id
-                      name = $error.id
-                      shortDescription = @{
-                          text = $error.msg
-                      }
-                      fullDescription = @{
-                          text = $error.verbose
-                      }
-                      defaultConfiguration = @{
-                          level = if ($error.severity -eq "error") { "error" } else { "warning" }
+          if ($xml.results.errors) {
+              foreach ($error in $xml.results.errors.error) {
+                  if (-not $uniqueRules.ContainsKey($error.id)) {
+                      $uniqueRules[$error.id] = @{
+                          id = $error.id
+                          name = $error.id
+                          shortDescription = @{
+                              text = $error.msg
+                          }
+                          fullDescription = @{
+                              text = $error.verbose
+                          }
+                          defaultConfiguration = @{
+                              level = if ($error.severity -eq "error") { "error" } else { "warning" }
+                          }
                       }
                   }
               }
@@ -170,70 +172,83 @@ jobs:
           $sarif.runs[0].tool.driver.rules = $uniqueRules.Values
 
           # 분석 결과 변환
-          foreach ($error in $xml.results.errors.error) {
-              # 파일 경로 정규화
-              $filePath = $error.location.file.Replace("\", "/")
-              if ($filePath.StartsWith("./")) {
-                  $filePath = $filePath.Substring(2)
-              }
-              
-              $result = @{
-                  ruleId = $error.id
-                  level = if ($error.severity -eq "error") { "error" } else { "warning" }
-                  message = @{
-                      text = $error.verbose
+          if ($xml.results.errors) {
+              foreach ($error in $xml.results.errors.error) {
+                  # 파일 경로 정규화
+                  $filePath = $error.location.file.Replace("\", "/")
+                  if ($filePath.StartsWith("./")) {
+                      $filePath = $filePath.Substring(2)
                   }
-                  locations = @(
-                      @{
-                          physicalLocation = @{
-                              artifactLocation = @{
-                                  uri = [System.Web.HttpUtility]::UrlPathEncode($filePath)
-                                  uriBaseId = "%SRCROOT%"
-                              }
-                              region = @{
-                                  startLine = [int]$error.location.line
-                                  startColumn = 1
-                                  endColumn = if ($error.location.column) { [int]$error.location.column } else { 80 }
+                  
+                  # 해시 생성
+                  $locationHash = "{0}:{1}" -f $filePath, $error.location.line
+                  
+                  $result = @{
+                      ruleId = $error.id
+                      level = if ($error.severity -eq "error") { "error" } else { "warning" }
+                      message = @{
+                          text = $error.verbose
+                      }
+                      locations = @(
+                          @{
+                              physicalLocation = @{
+                                  artifactLocation = @{
+                                      uri = [System.Web.HttpUtility]::UrlPathEncode($filePath)
+                                      uriBaseId = "%SRCROOT%"
+                                  }
+                                  region = @{
+                                      startLine = [int]$error.location.line
+                                      startColumn = 1
+                                      endColumn = if ($error.location.column) { [int]$error.location.column } else { 80 }
+                                  }
                               }
                           }
+                      )
+                      partialFingerprints = @{
+                          primaryLocationLineHash = $locationHash
                       }
-                  )
-                  partialFingerprints = @{
-                      primaryLocationLineHash = "$filePath:$($error.location.line)"
                   }
+                  $sarif.runs[0].results += $result
               }
-              $sarif.runs[0].results += $result
           }
 
           # SARIF 파일 저장 (UTF-8, BOM 없음)
           $utf8NoBOM = New-Object System.Text.UTF8Encoding $false
-          [System.IO.File]::WriteAllText(
-              "cppcheck-results.sarif",
-              (ConvertTo-Json -InputObject $sarif -Depth 10),
-              $utf8NoBOM
-          )
+          $sarifJson = ConvertTo-Json -InputObject $sarif -Depth 10
           
-          # 저장된 파일 확인
-          if (Test-Path "cppcheck-results.sarif") {
-              Write-Host "SARIF file created successfully"
-              Get-Content "cppcheck-results.sarif" | Select-Object -First 10
-          } else {
-              Write-Error "Failed to create SARIF file"
+          # 파일 저장 전 디렉토리 확인
+          Write-Host "현재 작업 디렉토리: $pwd"
+          Write-Host "SARIF 파일 저장 시도..."
+          
+          try {
+              [System.IO.File]::WriteAllText(
+                  (Join-Path $pwd "cppcheck-results.sarif"),
+                  $sarifJson,
+                  $utf8NoBOM
+              )
+              Write-Host "SARIF 파일이 성공적으로 생성되었습니다."
+              
+              # 파일 내용 확인
+              if (Test-Path "cppcheck-results.sarif") {
+                  Write-Host "SARIF 파일 내용 미리보기:"
+                  Get-Content "cppcheck-results.sarif" | Select-Object -First 10
+              }
+          }
+          catch {
+              Write-Error "SARIF 파일 생성 중 오류 발생: $_"
               exit 1
           }
         shell: pwsh
         # Cppcheck XML 결과를 GitHub Code Scanning이 이해할 수 있는 SARIF 형식으로 변환합니다.
-        # 개선된 버전은 더 자세한 규칙 정보와 위치 정보를 포함합니다.
-      # [수정된 부분 끝]
 
-      # [수정된 부분 시작] - SARIF 업로드 개선
+      # [수정된 부분] SARIF 결과 업로드 - 에러 처리 추가
       - name: SARIF 결과 업로드
         uses: github/codeql-action/upload-sarif@v3
-        if: always()  # 이전 단계가 실패해도 실행
+        if: always() && (Test-Path "cppcheck-results.sarif")  # 파일이 존재할 때만 실행
         with:
           sarif_file: cppcheck-results.sarif
           category: Cppcheck
-          wait-for-processing: true  # 처리 완료까지 대기
+          wait-for-processing: true
       # [수정된 부분 끝]
 
       # Step 10: Cppcheck 분석 결과를 아티팩트로 저장
