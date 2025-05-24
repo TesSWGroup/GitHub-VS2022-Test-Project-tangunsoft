@@ -90,37 +90,31 @@ jobs:
           python-version: '3.x'
 
       # Step 8: Cppcheck 분석 실행 및 SARIF 변환
-      # PowerShell에서 명령어 실행 시 발생하는 구문 오류를 수정했습니다.
-      # 수정사항: 
-      # 1. cmd.exe를 사용하여 Cppcheck 실행
-      # 2. 따옴표 처리 방식 변경
-      # 3. 경로에 공백이 있는 경우를 고려한 처리
+      # 수정사항: PowerShell 문자열 처리 방식 변경 및 Python 스크립트 수정
       - name: Cppcheck 분석 실행
         run: |
-          # Cppcheck 실행을 위한 임시 배치 파일 생성
-          @"
+          # Cppcheck 실행을 위한 배치 파일 생성
+          @'
           @echo off
           "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml .
-          "@ | Out-File -Encoding ASCII cppcheck-run.bat
+          '@ | Out-File -Encoding ASCII cppcheck-run.bat
 
           # 배치 파일 실행
           .\cppcheck-run.bat
           
-          # SARIF 변환 스크립트 생성
-          @"
+          # Python 스크립트 내용을 직접 파일에 작성
+          $pythonScript = @'
           import json
           import xml.etree.ElementTree as ET
           import sys
           import os
           
           def convert_to_sarif(xml_file, sarif_file):
-              # XML 파일 파싱
               tree = ET.parse(xml_file)
               root = tree.getroot()
               
-              # SARIF 기본 구조 생성
               sarif_output = {
-                  "\$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
                   "version": "2.1.0",
                   "runs": [
                       {
@@ -136,7 +130,6 @@ jobs:
                   ]
               }
               
-              # 결과 변환
               for error in root.findall(".//error"):
                   result = {
                       "ruleId": error.get("id"),
@@ -147,7 +140,6 @@ jobs:
                       "locations": []
                   }
                   
-                  # 위치 정보 추가
                   for location in error.findall("location"):
                       result["locations"].append({
                           "physicalLocation": {
@@ -156,23 +148,25 @@ jobs:
                               },
                               "region": {
                                   "startLine": int(location.get("line")),
-                                  "startColumn": 1,  # GitHub 요구사항을 만족하기 위해 기본값 설정
-                                  "endColumn": 2     # GitHub 요구사항을 만족하기 위해 기본값 설정
+                                  "startColumn": 1,
+                                  "endColumn": 2
                               }
                           }
                       })
                   
                   sarif_output["runs"][0]["results"].append(result)
               
-              # SARIF 파일 저장
               with open(sarif_file, "w", encoding="utf-8") as f:
                   json.dump(sarif_output, f, indent=2)
           
           if __name__ == "__main__":
               convert_to_sarif("cppcheck-result.xml", "cppcheck-results.sarif")
-          "@ | Out-File -Encoding UTF8 convert_to_sarif.py
+'@
           
-          # 변환 스크립트 실행
+          # Python 스크립트를 파일로 저장
+          $pythonScript | Out-File -Encoding UTF8 convert_to_sarif.py
+          
+          # Python 스크립트 실행
           python convert_to_sarif.py
         shell: pwsh
 
