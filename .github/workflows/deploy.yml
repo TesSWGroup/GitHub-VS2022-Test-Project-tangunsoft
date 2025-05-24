@@ -65,7 +65,7 @@ jobs:
       - name: Cppcheck 설치
         run: |
           # Cppcheck 다운로드 URL
-          $url = "https://github.com/danmar/cppcheck/releases/download/2.13.0/cppcheck-2.13.0-x64-Setup.msi"
+          $url = "https://github.com/danmar/cppcheck/releases/download/2.17.1/cppcheck-2.17.1-x64-Setup.msi"
           # 다운로드 파일 경로
           $output = "cppcheck-setup.msi"
           # Cppcheck 다운로드
