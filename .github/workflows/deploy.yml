@@ -15,6 +15,11 @@ on:
   # GitHub 웹 인터페이스에서 수동으로 워크플로우를 실행할 수 있게 합니다.
   workflow_dispatch:
 
+# 환경 변수 설정
+env:
+  # MSBuild 경로를 저장할 환경 변수
+  MSBUILD_PATH: ''
+
 # 워크플로우에서 실행할 작업들을 정의합니다.
 jobs:
   # 'Build-And-Analysis'라는 이름의 작업을 정의합니다.
@@ -111,24 +116,32 @@ jobs:
       # Step 4: Visual Studio 빌드 도구를 설정합니다.
       # microsoft/setup-msbuild 액션을 사용하여 MSBuild 도구를 설정합니다.
       - name: Visual Studio 개발 환경 설정
+        id: setup_msbuild
         uses: microsoft/setup-msbuild@v1.0.2
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+      # MSBuild 경로를 환경 변수에 저장
+      - name: MSBuild 경로 저장
+        run: |
+          $msbuildPath = vswhere.exe -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          echo "MSBUILD_PATH=$msbuildPath" >> $env:GITHUB_ENV
+        shell: pwsh
 
       # Step 5: CodeQL 분석을 초기화합니다.
       # GitHub의 코드 분석 도구인 CodeQL을 설정합니다.
       - name: CodeQL 초기화
         uses: github/codeql-action/init@v3
         with:
-          # C++ 코드 분석을 위한 설정
           languages: cpp
-          # 보안 및 품질 관련 쿼리를 사용하여 분석
           queries: security-and-quality
 
       # Step 6: Visual Studio 솔루션을 빌드합니다.
       # MSBuild를 사용하여 프로젝트를 빌드하고 CodeQL이 이를 분석합니다.
       - name: 솔루션 빌드
         run: |
-          # 자세한 빌드 로그를 출력하도록 설정하여 빌드
-          msbuild /p:Configuration=Release /v:detailed
+          & "$env:MSBUILD_PATH" /p:Configuration=Release /v:detailed
+        shell: pwsh
         env:
           # CodeQL 분석을 위한 환경 변수 설정
           CODEQL_EXTRACTOR_CPP_TRAP_CACHING: false
@@ -163,11 +176,8 @@ jobs:
       # C++ 코드의 정적 분석을 수행하고 결과를 XML 형식으로 저장합니다.
       - name: Cppcheck 분석 실행
         run: |
-          # Cppcheck의 에러 정의 목록을 XML 파일로 저장
-          & "C:\Program Files\Cppcheck\cppcheck.exe" "--errorlist" > errorlist.xml
-          
-          # 모든 검사를 활성화하여 코드 분석 실행
-          & "C:\Program Files\Cppcheck\cppcheck.exe" "--enable=all" "--xml" "--xml-version=2" "--output-file=report.xml" "."
+          # 분석 실행 및 XML 보고서 생성
+          & "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=report.xml .
         shell: pwsh
 
       # Step 10: Cppcheck의 XML 결과를 SARIF 형식으로 변환합니다.
@@ -175,11 +185,7 @@ jobs:
       - name: XML을 SARIF로 변환
         uses: Flast/cppcheck-sarif@v2
         with:
-          # Cppcheck의 에러 정의 파일 지정
-          errorlist: errorlist.xml
-          # 분석 결과 XML 파일 지정
           input: report.xml
-          # 변환된 SARIF 파일 경로 지정
           output: report.sarif
 
       # Step 11: 변환된 SARIF 파일을 GitHub에 업로드합니다.
@@ -187,7 +193,5 @@ jobs:
       - name: SARIF 결과 업로드
         uses: github/codeql-action/upload-sarif@v3
         with:
-          # 업로드할 SARIF 파일 지정
           sarif_file: report.sarif
-          # 결과를 Cppcheck 카테고리로 분류
           category: Cppcheck
