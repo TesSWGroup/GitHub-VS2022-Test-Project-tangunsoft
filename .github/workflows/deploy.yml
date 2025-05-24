@@ -1,102 +1,193 @@
-# 워크플로의 이름을 정의합니다. 이 이름은 GitHub의 Actions 탭에서 표시됩니다.
+# GitHub Actions 워크플로우 정의 파일
+# 이 파일은 GitHub Actions에서 자동화된 빌드, 테스트, 분석을 수행하는 방법을 정의합니다.
+
+# 워크플로우의 이름을 정의합니다. 이 이름은 GitHub의 Actions 탭에서 표시됩니다.
 name: GitHub Actions 실행시켜보기
 
 # 워크플로우가 실행될 조건을 지정합니다.
 on:
-  # push 이벤트 발생 시 실행
+  # main 브랜치에 push가 발생할 때 워크플로우를 실행합니다.
   push:
     branches: [ "main" ]
-  # pull request 이벤트 발생 시 실행
+  # main 브랜치로 pull request가 생성되거나 업데이트될 때 워크플로우를 실행합니다.
   pull_request:
     branches: [ "main" ]
-  # 수동으로 워크플로우를 실행할 수 있게 함
+  # GitHub 웹 인터페이스에서 수동으로 워크플로우를 실행할 수 있게 합니다.
   workflow_dispatch:
 
 # 워크플로우에서 실행할 작업들을 정의합니다.
 jobs:
-  # Build-And-Analysis라는 이름의 작업을 정의합니다.
+  # 'Build-And-Analysis'라는 이름의 작업을 정의합니다.
+  # 이 작업은 코드 빌드와 정적 분석을 수행합니다.
   Build-And-Analysis:
-    # 작업이 실행될 운영체제를 지정합니다.
+    # 작업이 실행될 운영체제를 Windows로 지정합니다.
+    # 최신 버전의 Windows 실행 환경을 사용합니다.
     runs-on: windows-latest
     
-    # 권한 설정
+    # GitHub Actions가 필요로 하는 권한을 설정합니다.
     permissions:
-      # security-events 쓰기 권한 필요 (CodeQL 결과 업로드용)
+      # CodeQL과 Cppcheck 결과를 업로드하기 위해 security-events에 쓰기 권한이 필요합니다.
       security-events: write
-      # actions 읽기 권한 필요
+      # GitHub Actions를 실행하기 위해 actions에 읽기 권한이 필요합니다.
       actions: read
-      # contents 읽기 권한 필요
+      # 저장소의 코드를 읽기 위해 contents에 읽기 권한이 필요합니다.
       contents: read
 
-    # 작업의 각 단계를 정의합니다.
+    # 작업의 각 단계를 순차적으로 정의합니다.
     steps:
-      # Step 1: 코드 체크아웃
+      # Step 1: 저장소의 코드를 작업 환경으로 체크아웃합니다.
+      # GitHub의 actions/checkout 액션을 사용하여 코드를 가져옵니다.
       - name: 코드 체크아웃
         uses: actions/checkout@v3
 
-      # Step 2: Visual Studio 개발 환경 설정
+      # Step 2: PowerShell 파이프라인 사용 예제를 보여줍니다.
+      # 파이프라인을 사용하여 명령어를 연결하고 데이터를 처리하는 방법을 설명합니다.
+      - name: PowerShell 파이프라인 예제
+        run: |
+          # 예제 1: 파일 목록을 필터링하고 정렬하여 출력
+          Write-Host "`n예제 1: .cpp 파일만 찾아서 이름순으로 정렬"
+          Get-ChildItem -Recurse |
+            Where-Object { $_.Extension -eq '.cpp' } |
+            Sort-Object Name |
+            Select-Object Name, Length |
+            Format-Table -AutoSize
+          
+          # 예제 2: 프로세스 정보를 필터링하고 포맷팅
+          Write-Host "`n예제 2: 메모리 사용량이 높은 상위 5개 프로세스"
+          Get-Process |
+            Sort-Object WorkingSet -Descending |
+            Select-Object Name, WorkingSet, CPU -First 5 |
+            Format-Table -AutoSize
+          
+          # 예제 3: 텍스트 파일 처리 (로그 분석 시뮬레이션)
+          Write-Host "`n예제 3: 텍스트 파일 생성 및 분석"
+          "Error: 시스템 오류`nWarning: 경고 메시지`nInfo: 정보 메시지`nError: 다른 오류`n" |
+            Out-File -FilePath "sample.log"
+          Get-Content "sample.log" |
+            Where-Object { $_ -like "*Error*" } |
+            ForEach-Object { "발견된 오류: $_" }
+          
+          # 예제 4: 환경 변수 처리 및 출력
+          Write-Host "`n예제 4: 시스템 환경 변수 분석"
+          [Environment]::GetEnvironmentVariables() |
+            Select-Object -First 5 |
+            ForEach-Object { $_.GetEnumerator() } |
+            Sort-Object Key |
+            Format-Table Key, Value -AutoSize
+          
+          # 예제 5: 날짜 데이터 처리
+          Write-Host "`n예제 5: 최근 3일간의 날짜 처리"
+          1..3 |
+            ForEach-Object { (Get-Date).AddDays(-$_) } |
+            Select-Object DayOfWeek, Date |
+            Format-Table -AutoSize
+        shell: pwsh
+
+      # Step 3: 기본 환경 테스트를 수행합니다.
+      # 워크플로우가 정상적으로 실행되는지 확인하기 위한 기본 테스트입니다.
+      - name: 기본 환경 테스트
+        run: |
+          # PowerShell 버전 확인
+          Write-Host "PowerShell 버전 확인:"
+          $PSVersionTable.PSVersion
+          
+          # 운영체제 정보 확인
+          Write-Host "`n운영체제 정보 확인:"
+          systeminfo | findstr /B /C:"OS Name" /C:"OS Version"
+          
+          # 현재 작업 디렉토리 및 파일 목록 확인
+          Write-Host "`n현재 작업 디렉토리:"
+          pwd
+          Write-Host "`n파일 목록:"
+          Get-ChildItem -Recurse -Name
+          
+          # 환경 변수 확인
+          Write-Host "`n주요 환경 변수 확인:"
+          Write-Host "GITHUB_WORKSPACE: $env:GITHUB_WORKSPACE"
+          Write-Host "GITHUB_REPOSITORY: $env:GITHUB_REPOSITORY"
+          Write-Host "GITHUB_REF: $env:GITHUB_REF"
+        shell: pwsh
+
+      # Step 4: Visual Studio 빌드 도구를 설정합니다.
+      # microsoft/setup-msbuild 액션을 사용하여 MSBuild 도구를 설정합니다.
       - name: Visual Studio 개발 환경 설정
         uses: microsoft/setup-msbuild@v1.0.2
 
-      # Step 3: CodeQL 초기화
+      # Step 5: CodeQL 분석을 초기화합니다.
+      # GitHub의 코드 분석 도구인 CodeQL을 설정합니다.
       - name: CodeQL 초기화
         uses: github/codeql-action/init@v3
         with:
+          # C++ 코드 분석을 위한 설정
           languages: cpp
+          # 보안 및 품질 관련 쿼리를 사용하여 분석
           queries: security-and-quality
 
-      # Step 4: Visual Studio 솔루션 빌드 (CodeQL 추적 포함)
+      # Step 6: Visual Studio 솔루션을 빌드합니다.
+      # MSBuild를 사용하여 프로젝트를 빌드하고 CodeQL이 이를 분석합니다.
       - name: 솔루션 빌드
         run: |
-          # MSBuild 명령에 자세한 출력 옵션 추가
+          # 자세한 빌드 로그를 출력하도록 설정하여 빌드
           msbuild /p:Configuration=Release /v:detailed
         env:
-          # CodeQL이 빌드 명령을 추적할 수 있도록 환경 변수 설정
+          # CodeQL 분석을 위한 환경 변수 설정
           CODEQL_EXTRACTOR_CPP_TRAP_CACHING: false
           CODEQL_EXTRACTOR_CPP_VERBOSE: 1
 
-      # Step 5: CodeQL 분석 실행
+      # Step 7: CodeQL 분석을 실행합니다.
+      # 빌드 중 수집된 데이터를 바탕으로 코드 분석을 수행합니다.
       - name: CodeQL 분석 실행
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:cpp"
 
-      # Step 6: Cppcheck 설치
+      # Step 8: Cppcheck 정적 분석 도구를 설치합니다.
+      # Windows용 Cppcheck 2.17.1 버전을 다운로드하고 설치합니다.
       - name: Cppcheck 설치
         run: |
-          # Cppcheck MSI 다운로드 및 설치
+          # Cppcheck MSI 설치 파일 다운로드
           $url = "https://github.com/danmar/cppcheck/releases/download/2.17.1/cppcheck-2.17.1-x64-Setup.msi"
           $output = "cppcheck-setup.msi"
           Invoke-WebRequest -Uri $url -OutFile $output
+          
+          # 자동 설치 실행 (UI 없이 설치)
           Start-Process msiexec.exe -ArgumentList "/i $output /quiet /qn" -Wait
           Start-Sleep -Seconds 10
           
-          # 환경 변수 설정
+          # Cppcheck를 시스템 PATH에 추가
           $env:PATH += ";C:\Program Files\Cppcheck"
           [Environment]::SetEnvironmentVariable("PATH", $env:PATH, "Machine")
         shell: pwsh
 
-      # Step 7: Cppcheck 분석 실행
+      # Step 9: Cppcheck를 사용하여 코드 분석을 실행합니다.
+      # C++ 코드의 정적 분석을 수행하고 결과를 XML 형식으로 저장합니다.
       - name: Cppcheck 분석 실행
         run: |
-          # errorlist.xml 생성
+          # Cppcheck의 에러 정의 목록을 XML 파일로 저장
           & "C:\Program Files\Cppcheck\cppcheck.exe" "--errorlist" > errorlist.xml
           
-          # 분석 실행 및 XML 보고서 생성
+          # 모든 검사를 활성화하여 코드 분석 실행
           & "C:\Program Files\Cppcheck\cppcheck.exe" "--enable=all" "--xml" "--xml-version=2" "--output-file=report.xml" "."
         shell: pwsh
 
-      # Step 8: Cppcheck XML을 SARIF로 변환
+      # Step 10: Cppcheck의 XML 결과를 SARIF 형식으로 변환합니다.
+      # GitHub 보안 탭에서 결과를 보기 위해 SARIF 형식으로 변환합니다.
       - name: XML을 SARIF로 변환
         uses: Flast/cppcheck-sarif@v2
         with:
+          # Cppcheck의 에러 정의 파일 지정
           errorlist: errorlist.xml
+          # 분석 결과 XML 파일 지정
           input: report.xml
+          # 변환된 SARIF 파일 경로 지정
           output: report.sarif
 
-      # Step 9: SARIF 결과 업로드
+      # Step 11: 변환된 SARIF 파일을 GitHub에 업로드합니다.
+      # 분석 결과를 GitHub 보안 탭에서 확인할 수 있게 됩니다.
       - name: SARIF 결과 업로드
         uses: github/codeql-action/upload-sarif@v3
         with:
+          # 업로드할 SARIF 파일 지정
           sarif_file: report.sarif
+          # 결과를 Cppcheck 카테고리로 분류
           category: Cppcheck
