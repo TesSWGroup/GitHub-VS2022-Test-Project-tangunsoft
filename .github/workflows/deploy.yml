@@ -64,7 +64,7 @@ jobs:
       # Step 6: Cppcheck 설치
       - name: Cppcheck 설치
         run: |
-          # Cppcheck 다운로드 URL
+          # Cppcheck 다운로드 URL (2.17.1 버전으로 업데이트)
           $url = "https://github.com/danmar/cppcheck/releases/download/2.17.1/cppcheck-2.17.1-x64-Setup.msi"
           # 다운로드 파일 경로
           $output = "cppcheck-setup.msi"
@@ -86,94 +86,11 @@ jobs:
       # Step 7: Cppcheck 분석 실행
       - name: Cppcheck 분석 실행
         run: |
-          REM 프로젝트 소스 파일 분석
-          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --output-file=cppcheck-result.xml .
+          REM 프로젝트 소스 파일 분석 (SARIF 형식으로 출력)
+          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --output-format=sarif --output-file=cppcheck-results.sarif .
         shell: cmd
 
-      # Step 8: Python 설치 (SARIF 변환용)
-      - name: Python 설치
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
-
-      # Step 9: XML을 SARIF로 변환
-      - name: XML을 SARIF로 변환
-        run: |
-          # Python 스크립트 생성
-          @"
-          import json
-          import xml.etree.ElementTree as ET
-          import sys
-          import os
-          
-          def convert_to_sarif(xml_file, sarif_file):
-              # XML 파일 파싱
-              tree = ET.parse(xml_file)
-              root = tree.getroot()
-              
-              # SARIF 기본 구조 생성
-              sarif_output = {
-                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-                  "version": "2.1.0",
-                  "runs": [
-                      {
-                          "tool": {
-                              "driver": {
-                                  "name": "Cppcheck",
-                                  "version": root.find(".//cppcheck").get("version"),
-                                  "rules": []
-                              }
-                          },
-                          "results": []
-                      }
-                  ]
-              }
-              
-              # 결과 변환
-              for error in root.findall(".//error"):
-                  result = {
-                      "ruleId": error.get("id"),
-                      "level": "error" if error.get("severity") == "error" else "warning",
-                      "message": {
-                          "text": error.get("msg")
-                      },
-                      "locations": []
-                  }
-                  
-                  # 위치 정보 추가
-                  for location in error.findall("location"):
-                      # column 값이 없거나 0인 경우 1로 설정
-                      column = location.get("column")
-                      if not column or int(column) < 1:
-                          column = "1"
-                          
-                      result["locations"].append({
-                          "physicalLocation": {
-                              "artifactLocation": {
-                                  "uri": location.get("file").replace("\\", "/")
-                              },
-                              "region": {
-                                  "startLine": int(location.get("line")),
-                                  "startColumn": int(column)
-                              }
-                          }
-                      })
-                  
-                  sarif_output["runs"][0]["results"].append(result)
-              
-              # SARIF 파일 저장
-              with open(sarif_file, "w", encoding="utf-8") as f:
-                  json.dump(sarif_output, f, indent=2)
-          
-          if __name__ == "__main__":
-              convert_to_sarif("cppcheck-result.xml", "cppcheck-results.sarif")
-          "@ | Out-File -Encoding UTF8 convert_to_sarif.py
-          
-          # 변환 스크립트 실행
-          python convert_to_sarif.py
-        shell: pwsh
-
-      # Step 10: SARIF 결과 업로드
+      # Step 8: SARIF 결과 업로드
       - name: SARIF 결과 업로드
         uses: github/codeql-action/upload-sarif@v3
         with:
