@@ -85,19 +85,16 @@ jobs:
       - name: Cppcheck 분석 실행
         shell: pwsh
         run: |
-          # 배치 파일 생성
-          $batchContent = @'
-@echo off
-"C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml .
-'@
-          Set-Content -Path "cppcheck-run.bat" -Value $batchContent -Encoding ASCII
+          # Cppcheck 실행을 위한 배치 파일 생성
+          $BatchFileContent = '@echo off
+          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml .'
+          $BatchFileContent | Out-File -FilePath "cppcheck-run.bat" -Encoding ASCII
 
           # 배치 파일 실행
-          .\cppcheck-run.bat
+          cmd.exe /c cppcheck-run.bat
           
-          # Python 스크립트 생성
-          $pythonScript = @'
-import json
+          # SARIF 변환을 위한 Python 스크립트 생성
+          $PythonScript = 'import json
 import xml.etree.ElementTree as ET
 import sys
 import os
@@ -153,11 +150,10 @@ def convert_to_sarif(xml_file, sarif_file):
         json.dump(sarif_output, f, indent=2)
 
 if __name__ == "__main__":
-    convert_to_sarif("cppcheck-result.xml", "cppcheck-results.sarif")
-'@
+    convert_to_sarif("cppcheck-result.xml", "cppcheck-results.sarif")'
           
           # Python 스크립트를 파일로 저장
-          Set-Content -Path "convert_to_sarif.py" -Value $pythonScript -Encoding UTF8
+          $PythonScript | Out-File -FilePath "convert_to_sarif.py" -Encoding UTF8
           
           # Python 스크립트 실행
           python convert_to_sarif.py
