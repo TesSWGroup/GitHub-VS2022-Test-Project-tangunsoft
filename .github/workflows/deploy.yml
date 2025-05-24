@@ -64,22 +64,14 @@ jobs:
       # Step 6: Cppcheck 설치
       - name: Cppcheck 설치
         run: |
-          # Cppcheck 다운로드 URL (2.17.1 버전으로 업데이트)
           $url = "https://github.com/danmar/cppcheck/releases/download/2.17.1/cppcheck-2.17.1-x64-Setup.msi"
-          # 다운로드 파일 경로
           $output = "cppcheck-setup.msi"
-          # Cppcheck 다운로드
           Invoke-WebRequest -Uri $url -OutFile $output
-          # Cppcheck 설치 (자동 설치)
           Start-Process msiexec.exe -ArgumentList "/i $output /quiet /qn" -Wait
-          # 설치 완료 대기
           Start-Sleep -Seconds 10
-          # Cppcheck가 설치된 경로 확인 및 출력
           $cppcheckPath = "C:\Program Files\Cppcheck"
           Write-Host "Cppcheck installation path: $cppcheckPath"
-          # 환경 변수 PATH에 Cppcheck 경로 추가
           $env:Path += ";$cppcheckPath"
-          # 현재 PATH 출력
           Write-Host "Current PATH: $env:Path"
         shell: pwsh
 
@@ -90,19 +82,18 @@ jobs:
           python-version: '3.x'
 
       # Step 8: Cppcheck 분석 실행 및 SARIF 변환
-      # 수정사항: PowerShell 문자열 처리 방식 변경 및 Python 스크립트 수정
       - name: Cppcheck 분석 실행
         run: |
-          # Cppcheck 실행을 위한 배치 파일 생성
-          @'
+          # 배치 파일 생성
+          Set-Content -Path "cppcheck-run.bat" -Value @"
           @echo off
           "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml .
-          '@ | Out-File -Encoding ASCII cppcheck-run.bat
+          "@
 
           # 배치 파일 실행
           .\cppcheck-run.bat
           
-          # Python 스크립트 내용을 직접 파일에 작성
+          # Python 스크립트 생성
           $pythonScript = @'
           import json
           import xml.etree.ElementTree as ET
@@ -162,9 +153,9 @@ jobs:
           if __name__ == "__main__":
               convert_to_sarif("cppcheck-result.xml", "cppcheck-results.sarif")
 '@
-          
+
           # Python 스크립트를 파일로 저장
-          $pythonScript | Out-File -Encoding UTF8 convert_to_sarif.py
+          Set-Content -Path "convert_to_sarif.py" -Value $pythonScript
           
           # Python 스크립트 실행
           python convert_to_sarif.py
