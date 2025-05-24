@@ -84,18 +84,27 @@ jobs:
         shell: pwsh
 
       # Step 7: Python 설치 (SARIF 변환용)
-      # SARIF 형식의 column 정보 문제를 해결하기 위해 Python 스크립트를 사용합니다
       - name: Python 설치
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
 
       # Step 8: Cppcheck 분석 실행 및 SARIF 변환
-      # Cppcheck의 출력을 XML로 받은 후 Python 스크립트로 올바른 SARIF 형식으로 변환합니다
+      # PowerShell에서 명령어 실행 시 발생하는 구문 오류를 수정했습니다.
+      # 수정사항: 
+      # 1. cmd.exe를 사용하여 Cppcheck 실행
+      # 2. 따옴표 처리 방식 변경
+      # 3. 경로에 공백이 있는 경우를 고려한 처리
       - name: Cppcheck 분석 실행
         run: |
-          # XML 형식으로 Cppcheck 실행
+          # Cppcheck 실행을 위한 임시 배치 파일 생성
+          @"
+          @echo off
           "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml .
+          "@ | Out-File -Encoding ASCII cppcheck-run.bat
+
+          # 배치 파일 실행
+          .\cppcheck-run.bat
           
           # SARIF 변환 스크립트 생성
           @"
