@@ -80,10 +80,10 @@ jobs:
       - name: Cppcheck 분석 실행
         run: |
           # errorlist.xml 생성
-          "C:\Program Files\Cppcheck\cppcheck.exe" --errorlist > errorlist.xml
+          & "C:\Program Files\Cppcheck\cppcheck.exe" "--errorlist" > errorlist.xml
           
           # 분석 실행 및 XML 보고서 생성
-          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=report.xml .
+          & "C:\Program Files\Cppcheck\cppcheck.exe" "--enable=all" "--xml" "--xml-version=2" "--output-file=report.xml" "."
         shell: pwsh
 
       # Step 8: Cppcheck XML을 SARIF로 변환
