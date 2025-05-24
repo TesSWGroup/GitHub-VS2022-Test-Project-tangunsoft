@@ -85,77 +85,76 @@ jobs:
       - name: Cppcheck 분석 실행
         run: |
           # 배치 파일 생성
-          Set-Content -Path "cppcheck-run.bat" -Value @"
-          @echo off
-          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml .
-          "@
+          $batchContent = "@echo off`r`n"
+          $batchContent += "`"C:\Program Files\Cppcheck\cppcheck.exe`" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml ."
+          Set-Content -Path "cppcheck-run.bat" -Value $batchContent -Encoding ASCII
 
           # 배치 파일 실행
           .\cppcheck-run.bat
           
           # Python 스크립트 생성
-          $pythonScript = @'
-          import json
-          import xml.etree.ElementTree as ET
-          import sys
-          import os
-          
-          def convert_to_sarif(xml_file, sarif_file):
-              tree = ET.parse(xml_file)
-              root = tree.getroot()
-              
-              sarif_output = {
-                  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
-                  "version": "2.1.0",
-                  "runs": [
-                      {
-                          "tool": {
-                              "driver": {
-                                  "name": "Cppcheck",
-                                  "version": "2.17.1",
-                                  "rules": []
-                              }
-                          },
-                          "results": []
-                      }
-                  ]
-              }
-              
-              for error in root.findall(".//error"):
-                  result = {
-                      "ruleId": error.get("id"),
-                      "level": "error" if error.get("severity") == "error" else "warning",
-                      "message": {
-                          "text": error.get("msg")
-                      },
-                      "locations": []
-                  }
-                  
-                  for location in error.findall("location"):
-                      result["locations"].append({
-                          "physicalLocation": {
-                              "artifactLocation": {
-                                  "uri": location.get("file").replace("\\", "/")
-                              },
-                              "region": {
-                                  "startLine": int(location.get("line")),
-                                  "startColumn": 1,
-                                  "endColumn": 2
-                              }
-                          }
-                      })
-                  
-                  sarif_output["runs"][0]["results"].append(result)
-              
-              with open(sarif_file, "w", encoding="utf-8") as f:
-                  json.dump(sarif_output, f, indent=2)
-          
-          if __name__ == "__main__":
-              convert_to_sarif("cppcheck-result.xml", "cppcheck-results.sarif")
-'@
+          $pythonContent = @"
+import json
+import xml.etree.ElementTree as ET
+import sys
+import os
 
+def convert_to_sarif(xml_file, sarif_file):
+    tree = ET.parse(xml_file)
+    root = tree.getroot()
+    
+    sarif_output = {
+        '$schema': 'https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json',
+        'version': '2.1.0',
+        'runs': [
+            {
+                'tool': {
+                    'driver': {
+                        'name': 'Cppcheck',
+                        'version': '2.17.1',
+                        'rules': []
+                    }
+                },
+                'results': []
+            }
+        ]
+    }
+    
+    for error in root.findall('.//error'):
+        result = {
+            'ruleId': error.get('id'),
+            'level': 'error' if error.get('severity') == 'error' else 'warning',
+            'message': {
+                'text': error.get('msg')
+            },
+            'locations': []
+        }
+        
+        for location in error.findall('location'):
+            result['locations'].append({
+                'physicalLocation': {
+                    'artifactLocation': {
+                        'uri': location.get('file').replace('\\', '/')
+                    },
+                    'region': {
+                        'startLine': int(location.get('line')),
+                        'startColumn': 1,
+                        'endColumn': 2
+                    }
+                }
+            })
+        
+        sarif_output['runs'][0]['results'].append(result)
+    
+    with open(sarif_file, 'w', encoding='utf-8') as f:
+        json.dump(sarif_output, f, indent=2)
+
+if __name__ == '__main__':
+    convert_to_sarif('cppcheck-result.xml', 'cppcheck-results.sarif')
+"@
+          
           # Python 스크립트를 파일로 저장
-          Set-Content -Path "convert_to_sarif.py" -Value $pythonScript
+          Set-Content -Path "convert_to_sarif.py" -Value $pythonContent -Encoding UTF8
           
           # Python 스크립트 실행
           python convert_to_sarif.py
