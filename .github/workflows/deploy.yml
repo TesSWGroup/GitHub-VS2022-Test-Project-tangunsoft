@@ -83,14 +83,91 @@ jobs:
           Write-Host "Current PATH: $env:Path"
         shell: pwsh
 
-      # Step 7: Cppcheck 분석 실행
+      # Step 7: Python 설치 (SARIF 변환용)
+      # SARIF 형식의 column 정보 문제를 해결하기 위해 Python 스크립트를 사용합니다
+      - name: Python 설치
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      # Step 8: Cppcheck 분석 실행 및 SARIF 변환
+      # Cppcheck의 출력을 XML로 받은 후 Python 스크립트로 올바른 SARIF 형식으로 변환합니다
       - name: Cppcheck 분석 실행
         run: |
-          REM 프로젝트 소스 파일 분석 (SARIF 형식으로 출력)
-          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --output-format=sarif --output-file=cppcheck-results.sarif .
-        shell: cmd
+          # XML 형식으로 Cppcheck 실행
+          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml .
+          
+          # SARIF 변환 스크립트 생성
+          @"
+          import json
+          import xml.etree.ElementTree as ET
+          import sys
+          import os
+          
+          def convert_to_sarif(xml_file, sarif_file):
+              # XML 파일 파싱
+              tree = ET.parse(xml_file)
+              root = tree.getroot()
+              
+              # SARIF 기본 구조 생성
+              sarif_output = {
+                  "\$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                  "version": "2.1.0",
+                  "runs": [
+                      {
+                          "tool": {
+                              "driver": {
+                                  "name": "Cppcheck",
+                                  "version": "2.17.1",
+                                  "rules": []
+                              }
+                          },
+                          "results": []
+                      }
+                  ]
+              }
+              
+              # 결과 변환
+              for error in root.findall(".//error"):
+                  result = {
+                      "ruleId": error.get("id"),
+                      "level": "error" if error.get("severity") == "error" else "warning",
+                      "message": {
+                          "text": error.get("msg")
+                      },
+                      "locations": []
+                  }
+                  
+                  # 위치 정보 추가
+                  for location in error.findall("location"):
+                      result["locations"].append({
+                          "physicalLocation": {
+                              "artifactLocation": {
+                                  "uri": location.get("file").replace("\\", "/")
+                              },
+                              "region": {
+                                  "startLine": int(location.get("line")),
+                                  "startColumn": 1,  # GitHub 요구사항을 만족하기 위해 기본값 설정
+                                  "endColumn": 2     # GitHub 요구사항을 만족하기 위해 기본값 설정
+                              }
+                          }
+                      })
+                  
+                  sarif_output["runs"][0]["results"].append(result)
+              
+              # SARIF 파일 저장
+              with open(sarif_file, "w", encoding="utf-8") as f:
+                  json.dump(sarif_output, f, indent=2)
+          
+          if __name__ == "__main__":
+              convert_to_sarif("cppcheck-result.xml", "cppcheck-results.sarif")
+          "@ | Out-File -Encoding UTF8 convert_to_sarif.py
+          
+          # 변환 스크립트 실행
+          python convert_to_sarif.py
+        shell: pwsh
 
-      # Step 8: SARIF 결과 업로드
+      # Step 9: SARIF 결과 업로드
       - name: SARIF 결과 업로드
         uses: github/codeql-action/upload-sarif@v3
         with:
