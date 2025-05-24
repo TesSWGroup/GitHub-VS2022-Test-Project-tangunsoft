@@ -117,7 +117,7 @@ jobs:
       # microsoft/setup-msbuild 액션을 사용하여 MSBuild 도구를 설정합니다.
       - name: Visual Studio 개발 환경 설정
         id: setup_msbuild
-        uses: microsoft/setup-msbuild@v1.0.2
+        uses: microsoft/setup-msbuild@v1.3.1
         env:
           ACTIONS_ALLOW_UNSECURE_COMMANDS: true
 
