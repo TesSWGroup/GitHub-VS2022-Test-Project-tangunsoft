@@ -125,7 +125,10 @@ jobs:
       - name: MSBuild 경로 저장
         run: |
           $msbuildPath = vswhere.exe -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe
+          # 새로운 방식으로 환경 변수 설정 (set-output 대신 GITHUB_ENV 사용)
           echo "MSBUILD_PATH=$msbuildPath" >> $env:GITHUB_ENV
+          # PowerShell에서 현재 설정된 경로 출력 (디버깅용)
+          Write-Host "MSBuild 경로가 설정되었습니다: $msbuildPath"
         shell: pwsh
 
       # Step 5: CodeQL 분석을 초기화합니다.
@@ -140,6 +143,11 @@ jobs:
       # MSBuild를 사용하여 프로젝트를 빌드하고 CodeQL이 이를 분석합니다.
       - name: 솔루션 빌드
         run: |
+          if (-not (Test-Path $env:MSBUILD_PATH)) {
+            Write-Error "MSBuild 경로를 찾을 수 없습니다: $env:MSBUILD_PATH"
+            exit 1
+          }
+          Write-Host "MSBuild 실행: $env:MSBUILD_PATH"
           & "$env:MSBUILD_PATH" /p:Configuration=Release /v:detailed
         shell: pwsh
         env:
