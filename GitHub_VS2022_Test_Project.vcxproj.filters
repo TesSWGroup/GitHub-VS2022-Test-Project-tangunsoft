@@ -18,5 +18,8 @@
     <ClCompile Include="GitHub_VS2022_Test_Project.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="MemoryLeakTest.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

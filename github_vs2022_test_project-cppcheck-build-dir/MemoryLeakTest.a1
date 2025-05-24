@@ -1,0 +1,120 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="6911679194785878060">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.cpp" line="1" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;string&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;string&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.cpp" line="2" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;vector&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;vector&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.cpp" line="3" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;stdexcept&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;stdexcept&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.cpp" line="4" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;memory&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;memory&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.cpp" line="5" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.cpp" line="6" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.h" line="3" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;string&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;string&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.h" line="4" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;vector&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;vector&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.h" line="5" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;stdexcept&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;stdexcept&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.h" line="6" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;memory&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;memory&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.h" line="7" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryLeakTest.h" line="8" column="0"/>
+        </error>
+        <error id="noCopyConstructor" severity="warning" msg="Class &apos;ResourceManager&apos; does not have a copy constructor which is recommended since it has dynamic memory/resource allocation(s)." verbose="Class &apos;ResourceManager&apos; does not have a copy constructor which is recommended since it has dynamic memory/resource allocation(s)." cwe="398" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="60" column="38"/>
+            <symbol>ResourceManager</symbol>
+        </error>
+        <error id="noOperatorEq" severity="warning" msg="Class &apos;ResourceManager&apos; does not have a operator= which is recommended since it has dynamic memory/resource allocation(s)." verbose="Class &apos;ResourceManager&apos; does not have a operator= which is recommended since it has dynamic memory/resource allocation(s)." cwe="398" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="60" column="38"/>
+            <symbol>ResourceManager</symbol>
+        </error>
+        <error id="memleak" severity="error" msg="Memory leak: ptr" verbose="Memory leak: ptr" cwe="401" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="14" column="1"/>
+            <symbol>ptr</symbol>
+        </error>
+        <error id="memleak" severity="error" msg="Memory leak: data" verbose="Memory leak: data" cwe="401" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="22" column="9"/>
+            <symbol>data</symbol>
+        </error>
+        <error id="memleak" severity="error" msg="Memory leak: value" verbose="Memory leak: value" cwe="401" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="46" column="5"/>
+            <symbol>value</symbol>
+        </error>
+        <error id="unsafeClassCanLeak" severity="style" msg="Class &apos;ResourceManager&apos; is unsafe, &apos;ResourceManager::resource&apos; can leak by wrong usage." verbose="The class &apos;ResourceManager&apos; is unsafe, wrong usage can cause memory/resource leaks for &apos;ResourceManager::resource&apos;. This can for instance be fixed by adding proper cleanup in the destructor." cwe="398" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.h" line="20" column="10"/>
+            <symbol>ResourceManager</symbol>
+            <symbol>ResourceManager::resource</symbol>
+        </error>
+        <error id="unreachableCode" severity="style" msg="Statements following &apos;throw&apos; will never be executed." verbose="Statements following &apos;throw&apos; will never be executed." cwe="561" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="34" column="9"/>
+        </error>
+        <error id="constVariablePointer" severity="style" msg="Variable &apos;ptr&apos; can be declared as pointer to const" verbose="Variable &apos;ptr&apos; can be declared as pointer to const" cwe="398" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="11" column="10" info="Variable &apos;ptr&apos; can be declared as pointer to const"/>
+            <symbol>ptr</symbol>
+        </error>
+        <error id="uninitdata" severity="error" msg="Memory is allocated but not initialized: data" verbose="Memory is allocated but not initialized: data" cwe="457" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="25" column="14"/>
+            <symbol>data</symbol>
+        </error>
+        <error id="uninitdata" severity="error" msg="Memory is allocated but not initialized: arr" verbose="Memory is allocated but not initialized: arr" cwe="457" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="56" column="14"/>
+            <symbol>arr</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;ptr&apos; is assigned a value that is never used." verbose="Variable &apos;ptr&apos; is assigned a value that is never used." cwe="563" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="11" column="14"/>
+            <symbol>ptr</symbol>
+        </error>
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &apos;ptr&apos; is allocated memory that is never used." verbose="Variable &apos;ptr&apos; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="11" column="10"/>
+            <symbol>ptr</symbol>
+        </error>
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &apos;data&apos; is allocated memory that is never used." verbose="Variable &apos;data&apos; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="18" column="10"/>
+            <symbol>data</symbol>
+        </error>
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &apos;numbers&apos; is allocated memory that is never used." verbose="Variable &apos;numbers&apos; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="30" column="10"/>
+            <symbol>numbers</symbol>
+        </error>
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &apos;value&apos; is allocated memory that is never used." verbose="Variable &apos;value&apos; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="46" column="5"/>
+            <symbol>value</symbol>
+        </error>
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &apos;ptr&apos; is allocated memory that is never used." verbose="Variable &apos;ptr&apos; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="52" column="10"/>
+            <symbol>ptr</symbol>
+        </error>
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &apos;arr&apos; is allocated memory that is never used." verbose="Variable &apos;arr&apos; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp">
+            <location file="MemoryLeakTest.cpp" line="55" column="10"/>
+            <symbol>arr</symbol>
+        </error>
+  <FileInfo check="Class">
+<class name="ResourceManager" file="MemoryLeakTest.h" line="18" col="1" hash="941140667336594519"/>
+  </FileInfo>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="basicMemoryLeak" lineNumber="10"/>
+    <functiondecl functionName="conditionalMemoryLeak" lineNumber="17"/>
+    <functiondecl functionName="exceptionMemoryLeak" lineNumber="29"/>
+    <functiondecl functionName="reassignmentMemoryLeak" lineNumber="44"/>
+    <functiondecl functionName="correctMemoryManagement" lineNumber="51"/>
+    <functioncall functionName="ResourceManager"/>
+    <functioncall functionName="runtime_error"/>
+    <functioncall functionName="what"/>
+  </FileInfo>
+</analyzerinfo>

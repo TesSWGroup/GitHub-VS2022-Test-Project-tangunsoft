@@ -6,6 +6,7 @@
 #include <iostream>
 #include <cstdlib> // calloc을 위해 추가
 #include <cstring> // strcpy를 위해 추가
+#include "MemoryLeakTest.h"
 
 
 void MemoryLeakTest()
@@ -70,8 +71,39 @@ int main()
 	// std::cout << "Buffer content (potentially overflowed): " << buffer << std::endl; // 이 줄은 주석 처리하거나 주의해서 사용
 
 	std::cout << "Buffer overflow test added using manual loop." << std::endl;
+
+	//===================================================================
+	std::cout << "메모리 누수 테스트 시작" << std::endl;
+	std::cout << "----------------------------------------" << std::endl;
+
+	// 각 메모리 누수 시나리오 테스트
+	std::cout << "1. 기본 메모리 누수 테스트" << std::endl;
+	basicMemoryLeak();
 	
-	return 0; // main 함수에 반환 값 추가
+	std::cout << "\n2. 조건부 메모리 누수 테스트" << std::endl;
+	conditionalMemoryLeak(true);
+	
+	std::cout << "\n3. 예외 처리 메모리 누수 테스트" << std::endl;
+	exceptionMemoryLeak();
+	
+	std::cout << "\n4. 포인터 재할당 메모리 누수 테스트" << std::endl;
+	reassignmentMemoryLeak();
+
+	std::cout << "\n5. 클래스 소멸자 메모리 누수 테스트" << std::endl;
+	{
+		ResourceManager rm;
+		std::cout << "ResourceManager 객체 생성됨" << std::endl;
+	}
+	std::cout << "ResourceManager 객체 소멸됨" << std::endl;
+
+	std::cout << "\n6. 올바른 메모리 관리 예제" << std::endl;
+	correctMemoryManagement();
+
+	std::cout << "\n----------------------------------------" << std::endl;
+	std::cout << "메모리 누수 테스트 종료" << std::endl;
+	std::cout << "프로그램은 정상적으로 종료되지만, Cppcheck로 분석하면 메모리 누수를 발견할 수 있습니다." << std::endl;
+	
+	return 0;
 }
 
 // 프로그램 실행: <Ctrl+F5> 또는 [디버그] > [디버깅하지 않고 시작] 메뉴

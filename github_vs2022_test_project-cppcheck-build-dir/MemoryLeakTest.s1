@@ -1,0 +1,7 @@
+basicMemoryLeak call:[int] noreturn:[int]
+conditionalMemoryLeak
+exceptionMemoryLeak call:[runtime_error,what]
+reassignmentMemoryLeak call:[int]
+correctMemoryManagement call:[int]
+ResourceManager
+ResourceManager
