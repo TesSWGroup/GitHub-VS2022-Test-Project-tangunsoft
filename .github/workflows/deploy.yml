@@ -86,8 +86,10 @@ jobs:
         shell: pwsh
         run: |
           # 배치 파일 생성
-          $batchContent = '@echo off
-          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml .'
+          $batchContent = @'
+@echo off
+"C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=cppcheck-result.xml .
+'@
           Set-Content -Path "cppcheck-run.bat" -Value $batchContent -Encoding ASCII
 
           # 배치 파일 실행
