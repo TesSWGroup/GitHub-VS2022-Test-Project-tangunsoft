@@ -64,33 +64,39 @@ jobs:
       # Step 6: Cppcheck 설치
       - name: Cppcheck 설치
         run: |
+          # Cppcheck MSI 다운로드 및 설치
           $url = "https://github.com/danmar/cppcheck/releases/download/2.17.1/cppcheck-2.17.1-x64-Setup.msi"
           $output = "cppcheck-setup.msi"
           Invoke-WebRequest -Uri $url -OutFile $output
           Start-Process msiexec.exe -ArgumentList "/i $output /quiet /qn" -Wait
           Start-Sleep -Seconds 10
-          $cppcheckPath = "C:\Program Files\Cppcheck"
-          Write-Host "Cppcheck installation path: $cppcheckPath"
-          $env:Path += ";$cppcheckPath"
-          Write-Host "Current PATH: $env:Path"
+          
+          # 환경 변수 설정
+          $env:PATH += ";C:\Program Files\Cppcheck"
+          [Environment]::SetEnvironmentVariable("PATH", $env:PATH, "Machine")
         shell: pwsh
 
       # Step 7: Cppcheck 분석 실행
       - name: Cppcheck 분석 실행
         run: |
-          cppcheck --enable=all --xml --output-file=cppcheck-result.xml .
+          # errorlist.xml 생성
+          "C:\Program Files\Cppcheck\cppcheck.exe" --errorlist > errorlist.xml
+          
+          # 분석 실행 및 XML 보고서 생성
+          "C:\Program Files\Cppcheck\cppcheck.exe" --enable=all --xml --xml-version=2 --output-file=report.xml .
         shell: pwsh
 
       # Step 8: Cppcheck XML을 SARIF로 변환
       - name: XML을 SARIF로 변환
         uses: Flast/cppcheck-sarif@v2
         with:
-          input: cppcheck-result.xml
-          output: cppcheck-results.sarif
+          errorlist: errorlist.xml
+          input: report.xml
+          output: report.sarif
 
       # Step 9: SARIF 결과 업로드
       - name: SARIF 결과 업로드
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: cppcheck-results.sarif
+          sarif_file: report.sarif
           category: Cppcheck
