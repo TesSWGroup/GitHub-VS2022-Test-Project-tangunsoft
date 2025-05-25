@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<analyzerinfo hash="17149536457825687795">
+<analyzerinfo hash="15213780683745860757">
         <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
             <location file="GitHub_VS2022_Test_Project.cpp" line="6" column="0"/>
         </error>
@@ -27,38 +27,46 @@
         <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstdlib&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
             <location file="MemoryLeakTest.h" line="8" column="0"/>
         </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryOverrunTest.h" line="2" column="0"/>
+        </error>
         <error id="arrayIndexOutOfBounds" severity="error" msg="Array &apos;p[100]&apos; accessed at index 100, which is out of bounds." verbose="Array &apos;p[100]&apos; accessed at index 100, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="25" column="3" info="Array index out of bounds"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="26" column="3" info="Array index out of bounds"/>
         </error>
         <error id="arrayIndexOutOfBounds" severity="error" msg="Array &apos;buffer[10]&apos; accessed at index 14, which is out of bounds." verbose="Array &apos;buffer[10]&apos; accessed at index 14, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="64" column="9" info="Array index out of bounds"/>
-            <location file="GitHub_VS2022_Test_Project.cpp" line="58" column="20" info="Assuming that condition &apos;i&lt;15&apos; is not redundant"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="65" column="9" info="Array index out of bounds"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="59" column="20" info="Assuming that condition &apos;i&lt;15&apos; is not redundant"/>
         </error>
         <error id="bufferAccessOutOfBounds" severity="error" msg="Buffer is accessed out of bounds: buffer" verbose="Buffer is accessed out of bounds: buffer" cwe="788" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="54" column="9" info="Buffer overrun"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="55" column="9" info="Buffer overrun"/>
         </error>
         <error id="cstyleCast" severity="style" msg="C-style pointer casting" verbose="C-style pointer casting detected. C++ offers four different kinds of casts as replacements: static_cast, const_cast, dynamic_cast and reinterpret_cast. A C-style cast could evaluate to any of those automatically, thus it is considered safer if the programmer explicitly states which kind of cast is expected." cwe="398" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="39" column="11"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="40" column="11"/>
         </error>
         <error id="unreadVariable" severity="style" msg="Variable &apos;buffer[i]&apos; is assigned a value that is never used." verbose="Variable &apos;buffer[i]&apos; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="60" column="14"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="61" column="14"/>
             <symbol>buffer[i]</symbol>
         </error>
         <error id="unreadVariable" severity="style" msg="Variable &apos;buffer[i]&apos; is assigned a value that is never used." verbose="Variable &apos;buffer[i]&apos; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="64" column="13"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="65" column="13"/>
             <symbol>buffer[i]</symbol>
         </error>
   <FileInfo check="CheckUnusedFunctions">
-    <functiondecl functionName="MemoryLeakTest" lineNumber="12"/>
-    <functiondecl functionName="main" lineNumber="30"/>
+    <functiondecl functionName="MemoryLeakTest" lineNumber="13"/>
+    <functiondecl functionName="main" lineNumber="31"/>
     <functioncall functionName="MemoryLeakTest"/>
+    <functioncall functionName="arrayBoundsOverrun"/>
     <functioncall functionName="basicMemoryLeak"/>
     <functioncall functionName="calloc"/>
     <functioncall functionName="conditionalMemoryLeak"/>
     <functioncall functionName="correctMemoryManagement"/>
+    <functioncall functionName="dynamicMemoryOverrun"/>
     <functioncall functionName="exceptionMemoryLeak"/>
+    <functioncall functionName="heapBufferOverflow"/>
     <functioncall functionName="reassignmentMemoryLeak"/>
+    <functioncall functionName="stackBufferOverflow"/>
     <functioncall functionName="strcpy"/>
+    <functioncall functionName="stringBufferOverrun"/>
     <functioncall functionName="true"/>
   </FileInfo>
 </analyzerinfo>

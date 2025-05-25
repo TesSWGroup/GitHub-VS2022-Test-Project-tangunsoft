@@ -1,2 +1,2 @@
 MemoryLeakTest
-main call:[MemoryLeakTest,basicMemoryLeak,calloc,conditionalMemoryLeak,correctMemoryManagement,exceptionMemoryLeak,reassignmentMemoryLeak,sizeof,strcpy]
+main call:[MemoryLeakTest,arrayBoundsOverrun,basicMemoryLeak,calloc,conditionalMemoryLeak,correctMemoryManagement,dynamicMemoryOverrun,exceptionMemoryLeak,heapBufferOverflow,reassignmentMemoryLeak,sizeof,stackBufferOverflow,strcpy,stringBufferOverrun]

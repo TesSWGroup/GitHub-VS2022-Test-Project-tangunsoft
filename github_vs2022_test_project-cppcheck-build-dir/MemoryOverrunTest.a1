@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<analyzerinfo hash="11248274704078196259">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;iostream&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryOverrunTest.h" line="2" column="0"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &lt;cstring&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &lt;cstring&gt; not found. Please note: Cppcheck does not need standard library headers to get proper results.">
+            <location file="MemoryOverrunTest.cpp" line="3" column="0"/>
+        </error>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &apos;arr[5]&apos; accessed at index 5, which is out of bounds." verbose="Array &apos;arr[5]&apos; accessed at index 5, which is out of bounds." cwe="788" file0="MemoryOverrunTest.cpp">
+            <location file="MemoryOverrunTest.cpp" line="11" column="12" info="Array index out of bounds"/>
+            <location file="MemoryOverrunTest.cpp" line="10" column="22" info="Assuming that condition &apos;i&lt;=5&apos; is not redundant"/>
+        </error>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &apos;ptr[10]&apos; accessed at index 14, which is out of bounds." verbose="Array &apos;ptr[10]&apos; accessed at index 14, which is out of bounds." cwe="788" file0="MemoryOverrunTest.cpp">
+            <location file="MemoryOverrunTest.cpp" line="23" column="12" info="Array index out of bounds"/>
+            <location file="MemoryOverrunTest.cpp" line="22" column="22" info="Assuming that condition &apos;i&lt;15&apos; is not redundant"/>
+        </error>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &apos;buffer[10]&apos; accessed at index 19, which is out of bounds." verbose="Array &apos;buffer[10]&apos; accessed at index 19, which is out of bounds." cwe="788" file0="MemoryOverrunTest.cpp">
+            <location file="MemoryOverrunTest.cpp" line="47" column="15" info="Array index out of bounds"/>
+            <location file="MemoryOverrunTest.cpp" line="46" column="22" info="Assuming that condition &apos;i&lt;20&apos; is not redundant"/>
+        </error>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &apos;dest[10]&apos; accessed at index 38, which is out of bounds." verbose="Array &apos;dest[10]&apos; accessed at index 38, which is out of bounds." cwe="788" file0="MemoryOverrunTest.cpp">
+            <location file="MemoryOverrunTest.cpp" line="61" column="13" info="Array index out of bounds"/>
+            <location file="MemoryOverrunTest.cpp" line="60" column="25" info="Assuming that condition &apos;i&lt;strlen(source)&apos; is not redundant"/>
+            <location file="MemoryOverrunTest.cpp" line="57" column="26" info="Assignment &apos;source=&quot;This string is too long for destination&quot;&apos;, assigned value is &quot;This string is too long for destination&quot;"/>
+        </error>
+        <error id="bufferAccessOutOfBounds" severity="error" msg="Buffer is accessed out of bounds: smallBuffer" verbose="Buffer is accessed out of bounds: smallBuffer" cwe="788" file0="MemoryOverrunTest.cpp">
+            <location file="MemoryOverrunTest.cpp" line="36" column="12" info="Buffer overrun"/>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;arr[i]&apos; is assigned a value that is never used." verbose="Variable &apos;arr[i]&apos; is assigned a value that is never used." cwe="563" file0="MemoryOverrunTest.cpp">
+            <location file="MemoryOverrunTest.cpp" line="11" column="16"/>
+            <symbol>arr[i]</symbol>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &apos;dest[i]&apos; is assigned a value that is never used." verbose="Variable &apos;dest[i]&apos; is assigned a value that is never used." cwe="563" file0="MemoryOverrunTest.cpp">
+            <location file="MemoryOverrunTest.cpp" line="61" column="17"/>
+            <symbol>dest[i]</symbol>
+        </error>
+  <FileInfo check="CheckUnusedFunctions">
+    <functiondecl functionName="arrayBoundsOverrun" lineNumber="5"/>
+    <functiondecl functionName="dynamicMemoryOverrun" lineNumber="17"/>
+    <functiondecl functionName="stackBufferOverflow" lineNumber="30"/>
+    <functiondecl functionName="heapBufferOverflow" lineNumber="41"/>
+    <functiondecl functionName="stringBufferOverrun" lineNumber="54"/>
+    <functioncall functionName="strcpy"/>
+    <functioncall functionName="strlen"/>
+  </FileInfo>
+</analyzerinfo>

@@ -2,120 +2,152 @@
 <results version="2">
     <cppcheck version="2.14.1"/>
     <errors>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="GitHub_VS2022_Test_Project.cpp" line="6"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="GitHub_VS2022_Test_Project.cpp" line="7"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="GitHub_VS2022_Test_Project.cpp" line="8"/>
         </error>
-        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;p[100]&amp;#039; accessed at index 100, which is out of bounds." verbose="Array &amp;#039;p[100]&amp;#039; accessed at index 100, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-24">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="25"/>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;p[100]&amp;#039; accessed at index 100, which is out of bounds." verbose="Array &amp;#039;p[100]&amp;#039; accessed at index 100, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-25">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="26"/>
         </error>
-        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;buffer[10]&amp;#039; accessed at index 14, which is out of bounds." verbose="Array &amp;#039;buffer[10]&amp;#039; accessed at index 14, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-24">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="64" info="Array index out of bounds"/>
-            <location file="GitHub_VS2022_Test_Project.cpp" line="58" info="Assuming that condition &amp;#039;i&amp;lt;15&amp;#039; is not redundant"/>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;buffer[10]&amp;#039; accessed at index 14, which is out of bounds." verbose="Array &amp;#039;buffer[10]&amp;#039; accessed at index 14, which is out of bounds." cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-25">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="65" info="Array index out of bounds"/>
+            <location file="GitHub_VS2022_Test_Project.cpp" line="59" info="Assuming that condition &amp;#039;i&amp;lt;15&amp;#039; is not redundant"/>
         </error>
-        <error id="bufferAccessOutOfBounds" severity="error" msg="Buffer is accessed out of bounds: buffer" verbose="Buffer is accessed out of bounds: buffer" cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-24">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="54"/>
+        <error id="bufferAccessOutOfBounds" severity="error" msg="Buffer is accessed out of bounds: buffer" verbose="Buffer is accessed out of bounds: buffer" cwe="788" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-25">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="55"/>
         </error>
-        <error id="cstyleCast" severity="style" msg="C-style pointer casting" verbose="C-style pointer casting detected. C++ offers four different kinds of casts as replacements: static_cast, const_cast, dynamic_cast and reinterpret_cast. A C-style cast could evaluate to any of those automatically, thus it is considered safer if the programmer explicitly states which kind of cast is expected." cwe="398" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-24">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="39"/>
+        <error id="cstyleCast" severity="style" msg="C-style pointer casting" verbose="C-style pointer casting detected. C++ offers four different kinds of casts as replacements: static_cast, const_cast, dynamic_cast and reinterpret_cast. A C-style cast could evaluate to any of those automatically, thus it is considered safer if the programmer explicitly states which kind of cast is expected." cwe="398" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-25">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="40"/>
         </error>
-        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-24">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="60"/>
+        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-25">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="61"/>
         </error>
-        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-24">
-            <location file="GitHub_VS2022_Test_Project.cpp" line="64"/>
+        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;buffer[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="GitHub_VS2022_Test_Project.cpp" sinceDate="2025-05-25">
+            <location file="GitHub_VS2022_Test_Project.cpp" line="65"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.h" line="3"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;string&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;string&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;string&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;string&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.h" line="4"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;vector&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;vector&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;vector&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;vector&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.h" line="5"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;stdexcept&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;stdexcept&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;stdexcept&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;stdexcept&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.h" line="6"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;memory&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;memory&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;memory&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;memory&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.h" line="7"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.h" line="8"/>
         </error>
-        <error id="unsafeClassCanLeak" severity="style" msg="Class &amp;#039;ResourceManager&amp;#039; is unsafe, &amp;#039;ResourceManager::resource&amp;#039; can leak by wrong usage." verbose="The class &amp;#039;ResourceManager&amp;#039; is unsafe, wrong usage can cause memory/resource leaks for &amp;#039;ResourceManager::resource&amp;#039;. This can for instance be fixed by adding proper cleanup in the destructor." cwe="398" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="unsafeClassCanLeak" severity="style" msg="Class &amp;#039;ResourceManager&amp;#039; is unsafe, &amp;#039;ResourceManager::resource&amp;#039; can leak by wrong usage." verbose="The class &amp;#039;ResourceManager&amp;#039; is unsafe, wrong usage can cause memory/resource leaks for &amp;#039;ResourceManager::resource&amp;#039;. This can for instance be fixed by adding proper cleanup in the destructor." cwe="398" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.h" line="20"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
+            <location file="MemoryOverrunTest.h" line="2"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;iostream&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="1"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;string&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;string&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;string&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;string&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="2"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;vector&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;vector&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;vector&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;vector&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="3"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;stdexcept&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;stdexcept&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;stdexcept&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;stdexcept&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="4"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;memory&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;memory&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;memory&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;memory&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="5"/>
         </error>
-        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-24">
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstdlib&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="6"/>
         </error>
-        <error id="noCopyConstructor" severity="warning" msg="Class &amp;#039;ResourceManager&amp;#039; does not have a copy constructor which is recommended since it has dynamic memory/resource allocation(s)." verbose="Class &amp;#039;ResourceManager&amp;#039; does not have a copy constructor which is recommended since it has dynamic memory/resource allocation(s)." cwe="398" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="noCopyConstructor" severity="warning" msg="Class &amp;#039;ResourceManager&amp;#039; does not have a copy constructor which is recommended since it has dynamic memory/resource allocation(s)." verbose="Class &amp;#039;ResourceManager&amp;#039; does not have a copy constructor which is recommended since it has dynamic memory/resource allocation(s)." cwe="398" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="60"/>
         </error>
-        <error id="noOperatorEq" severity="warning" msg="Class &amp;#039;ResourceManager&amp;#039; does not have a operator= which is recommended since it has dynamic memory/resource allocation(s)." verbose="Class &amp;#039;ResourceManager&amp;#039; does not have a operator= which is recommended since it has dynamic memory/resource allocation(s)." cwe="398" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="noOperatorEq" severity="warning" msg="Class &amp;#039;ResourceManager&amp;#039; does not have a operator= which is recommended since it has dynamic memory/resource allocation(s)." verbose="Class &amp;#039;ResourceManager&amp;#039; does not have a operator= which is recommended since it has dynamic memory/resource allocation(s)." cwe="398" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="60"/>
         </error>
-        <error id="memleak" severity="error" msg="Memory leak: ptr" verbose="Memory leak: ptr" cwe="401" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="memleak" severity="error" msg="Memory leak: ptr" verbose="Memory leak: ptr" cwe="401" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="14"/>
         </error>
-        <error id="memleak" severity="error" msg="Memory leak: data" verbose="Memory leak: data" cwe="401" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="memleak" severity="error" msg="Memory leak: data" verbose="Memory leak: data" cwe="401" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="22"/>
         </error>
-        <error id="memleak" severity="error" msg="Memory leak: value" verbose="Memory leak: value" cwe="401" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="memleak" severity="error" msg="Memory leak: value" verbose="Memory leak: value" cwe="401" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="46"/>
         </error>
-        <error id="unreachableCode" severity="style" msg="Statements following &amp;#039;throw&amp;#039; will never be executed." verbose="Statements following &amp;#039;throw&amp;#039; will never be executed." cwe="561" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="unreachableCode" severity="style" msg="Statements following &amp;#039;throw&amp;#039; will never be executed." verbose="Statements following &amp;#039;throw&amp;#039; will never be executed." cwe="561" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="34"/>
         </error>
-        <error id="constVariablePointer" severity="style" msg="Variable &amp;#039;ptr&amp;#039; can be declared as pointer to const" verbose="Variable &amp;#039;ptr&amp;#039; can be declared as pointer to const" cwe="398" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="constVariablePointer" severity="style" msg="Variable &amp;#039;ptr&amp;#039; can be declared as pointer to const" verbose="Variable &amp;#039;ptr&amp;#039; can be declared as pointer to const" cwe="398" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="11"/>
         </error>
-        <error id="uninitdata" severity="error" msg="Memory is allocated but not initialized: data" verbose="Memory is allocated but not initialized: data" cwe="457" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="uninitdata" severity="error" msg="Memory is allocated but not initialized: data" verbose="Memory is allocated but not initialized: data" cwe="457" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="25"/>
         </error>
-        <error id="uninitdata" severity="error" msg="Memory is allocated but not initialized: arr" verbose="Memory is allocated but not initialized: arr" cwe="457" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="uninitdata" severity="error" msg="Memory is allocated but not initialized: arr" verbose="Memory is allocated but not initialized: arr" cwe="457" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="56"/>
         </error>
-        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;ptr&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;ptr&amp;#039; is assigned a value that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;ptr&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;ptr&amp;#039; is assigned a value that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="11"/>
         </error>
-        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;ptr&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;ptr&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;ptr&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;ptr&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="11"/>
         </error>
-        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;data&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;data&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;data&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;data&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="18"/>
         </error>
-        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;numbers&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;numbers&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;numbers&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;numbers&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="30"/>
         </error>
-        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;value&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;value&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;value&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;value&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="46"/>
         </error>
-        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;ptr&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;ptr&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;ptr&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;ptr&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="52"/>
         </error>
-        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;arr&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;arr&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-24">
+        <error id="unusedAllocatedMemory" severity="style" msg="Variable &amp;#039;arr&amp;#039; is allocated memory that is never used." verbose="Variable &amp;#039;arr&amp;#039; is allocated memory that is never used." cwe="563" file0="MemoryLeakTest.cpp" sinceDate="2025-05-25">
             <location file="MemoryLeakTest.cpp" line="55"/>
+        </error>
+        <error id="missingIncludeSystem" severity="information" msg="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." verbose="Include file: &amp;lt;cstring&amp;gt; not found. Please note: Cppcheck does not need standard library headers to get proper results." sinceDate="2025-05-25">
+            <location file="MemoryOverrunTest.cpp" line="3"/>
+        </error>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;arr[5]&amp;#039; accessed at index 5, which is out of bounds." verbose="Array &amp;#039;arr[5]&amp;#039; accessed at index 5, which is out of bounds." cwe="788" file0="MemoryOverrunTest.cpp" sinceDate="2025-05-25">
+            <location file="MemoryOverrunTest.cpp" line="11" info="Array index out of bounds"/>
+            <location file="MemoryOverrunTest.cpp" line="10" info="Assuming that condition &amp;#039;i&amp;lt;=5&amp;#039; is not redundant"/>
+        </error>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;ptr[10]&amp;#039; accessed at index 14, which is out of bounds." verbose="Array &amp;#039;ptr[10]&amp;#039; accessed at index 14, which is out of bounds." cwe="788" file0="MemoryOverrunTest.cpp" sinceDate="2025-05-25">
+            <location file="MemoryOverrunTest.cpp" line="23" info="Array index out of bounds"/>
+            <location file="MemoryOverrunTest.cpp" line="22" info="Assuming that condition &amp;#039;i&amp;lt;15&amp;#039; is not redundant"/>
+        </error>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;buffer[10]&amp;#039; accessed at index 19, which is out of bounds." verbose="Array &amp;#039;buffer[10]&amp;#039; accessed at index 19, which is out of bounds." cwe="788" file0="MemoryOverrunTest.cpp" sinceDate="2025-05-25">
+            <location file="MemoryOverrunTest.cpp" line="47" info="Array index out of bounds"/>
+            <location file="MemoryOverrunTest.cpp" line="46" info="Assuming that condition &amp;#039;i&amp;lt;20&amp;#039; is not redundant"/>
+        </error>
+        <error id="arrayIndexOutOfBounds" severity="error" msg="Array &amp;#039;dest[10]&amp;#039; accessed at index 38, which is out of bounds." verbose="Array &amp;#039;dest[10]&amp;#039; accessed at index 38, which is out of bounds." cwe="788" file0="MemoryOverrunTest.cpp" sinceDate="2025-05-25">
+            <location file="MemoryOverrunTest.cpp" line="61" info="Array index out of bounds"/>
+            <location file="MemoryOverrunTest.cpp" line="60" info="Assuming that condition &amp;#039;i&amp;lt;strlen(source)&amp;#039; is not redundant"/>
+            <location file="MemoryOverrunTest.cpp" line="57" info="Assignment &amp;#039;source=&amp;quot;This string is too long for destination&amp;quot;&amp;#039;, assigned value is &amp;quot;This string is too long for destination&amp;quot;"/>
+        </error>
+        <error id="bufferAccessOutOfBounds" severity="error" msg="Buffer is accessed out of bounds: smallBuffer" verbose="Buffer is accessed out of bounds: smallBuffer" cwe="788" file0="MemoryOverrunTest.cpp" sinceDate="2025-05-25">
+            <location file="MemoryOverrunTest.cpp" line="36"/>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;arr[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;arr[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="MemoryOverrunTest.cpp" sinceDate="2025-05-25">
+            <location file="MemoryOverrunTest.cpp" line="11"/>
+        </error>
+        <error id="unreadVariable" severity="style" msg="Variable &amp;#039;dest[i]&amp;#039; is assigned a value that is never used." verbose="Variable &amp;#039;dest[i]&amp;#039; is assigned a value that is never used." cwe="563" file0="MemoryOverrunTest.cpp" sinceDate="2025-05-25">
+            <location file="MemoryOverrunTest.cpp" line="61"/>
         </error>
     </errors>
 </results>
