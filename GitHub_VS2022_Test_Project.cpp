@@ -32,6 +32,7 @@ int main()
 {
     std::cout << "GitHub_VS2022_Test_Project!\n";
 	std::cout << "GitHub_Cppcheck_Test_Project!\n";
+	std::cout << "Google_Test_Project!\n";
 
 	MemoryLeakTest();
 

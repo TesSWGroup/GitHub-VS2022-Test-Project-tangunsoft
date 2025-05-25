@@ -204,3 +204,42 @@ jobs:
         with:
           sarif_file: report.sarif
           category: Cppcheck
+
+      # Step 13: Google Test 실행 준비
+      # 주석: Google Test 프레임워크를 사용하여 단위 테스트를 실행하는 단계
+      # - name: Google Test 실행
+      #   run: |
+      #     # 1. 테스트 실행 파일 경로 설정 (Release 모드로 빌드된 테스트 실행 파일)
+      #     $testExecutable = ".\x64\Release\YourTestProject.exe"
+      #     
+      #     # 2. 테스트 실행 및 결과 XML 파일로 출력
+      #     # Google Test는 --gtest_output=xml:결과파일.xml 옵션으로 결과를 XML로 출력 가능
+      #     & $testExecutable --gtest_output=xml:test_results.xml
+      #     
+      #     # 3. 테스트 결과 확인
+      #     $xmlContent = [xml](Get-Content test_results.xml)
+      #     $failureCount = $xmlContent.testsuites.failures
+      #     
+      #     # 4. 테스트 실패 시 워크플로우 실패 처리
+      #     if ($failureCount -gt 0) {
+      #       Write-Error "테스트 실패: $failureCount 개의 테스트가 실패했습니다."
+      #       exit 1
+      #     }
+      #   shell: pwsh
+      
+      # Step 14: 테스트 결과 아티팩트로 저장
+      # 주석: 테스트 결과를 GitHub에 아티팩트로 업로드
+      # - name: 테스트 결과 업로드
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: test-results
+      #     path: test_results.xml
+      
+      # Step 15: 배포 단계
+      # 주석: 모든 테스트가 통과한 경우에만 배포 진행
+      # - name: 배포 작업
+      #   if: success()
+      #   run: |
+      #     Write-Host "모든 테스트가 통과되어 배포를 시작합니다."
+      #     # 여기에 실제 배포 스크립트 추가
+      #   shell: pwsh
