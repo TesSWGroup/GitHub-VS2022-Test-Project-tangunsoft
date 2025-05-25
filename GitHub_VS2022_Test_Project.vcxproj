@@ -129,6 +129,11 @@
   <ItemGroup>
     <ClCompile Include="GitHub_VS2022_Test_Project.cpp" />
     <ClCompile Include="MemoryLeakTest.cpp" />
+    <ClCompile Include="MemoryOverrunTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MemoryLeakTest.h" />
+    <ClInclude Include="MemoryOverrunTest.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

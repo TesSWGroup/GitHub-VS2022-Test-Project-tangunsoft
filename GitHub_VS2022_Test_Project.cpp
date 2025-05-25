@@ -7,6 +7,7 @@
 #include <cstdlib> // calloc을 위해 추가
 #include <cstring> // strcpy를 위해 추가
 #include "MemoryLeakTest.h"
+#include "MemoryOverrunTest.h"
 
 
 void MemoryLeakTest()
@@ -103,6 +104,26 @@ int main()
 	std::cout << "메모리 누수 테스트 종료" << std::endl;
 	std::cout << "프로그램은 정상적으로 종료되지만, Cppcheck로 분석하면 메모리 누수를 발견할 수 있습니다." << std::endl;
 	
+	// 메모리 오버런 테스트 실행
+	std::cout << "\n=== 메모리 오버런 테스트 시작 ===\n" << std::endl;
+	
+	arrayBoundsOverrun();
+	std::cout << std::endl;
+	
+	dynamicMemoryOverrun();
+	std::cout << std::endl;
+	
+	stackBufferOverflow();
+	std::cout << std::endl;
+	
+	heapBufferOverflow();
+	std::cout << std::endl;
+	
+	stringBufferOverrun();
+	std::cout << std::endl;
+	
+	std::cout << "=== 메모리 오버런 테스트 종료 ===\n" << std::endl;
+
 	return 0;
 }
 
