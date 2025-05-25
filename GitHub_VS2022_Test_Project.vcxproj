@@ -132,6 +132,7 @@
     <ClCompile Include="MemoryOverrunTest.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Calculator.h" />
     <ClInclude Include="MemoryLeakTest.h" />
     <ClInclude Include="MemoryOverrunTest.h" />
   </ItemGroup>
