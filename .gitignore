@@ -73,4 +73,7 @@ ipch/
 *.lib
 *.exp
 *.res
-*.manifest 
+*.manifest
+
+# Test 프로젝트
+CalculatorTest/ 
