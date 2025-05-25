@@ -1,3 +1,0 @@
-GitHub_VS2022_Test_Project.a1::GitHub_VS2022_Test_Project.cpp
-MemoryLeakTest.a1::MemoryLeakTest.cpp
-MemoryOverrunTest.a1::MemoryOverrunTest.cpp

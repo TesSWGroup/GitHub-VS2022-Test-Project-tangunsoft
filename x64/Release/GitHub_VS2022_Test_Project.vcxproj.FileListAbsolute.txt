@@ -1,2 +1,0 @@
-C:\D\github_actions_study\GitHub_VS2022_Test_Project\x64\Release\GitHub_VS2022_Test_Project.exe
-D:\github_actions_study\GitHub_VS2022_Test_Project\x64\Release\GitHub_VS2022_Test_Project.exe

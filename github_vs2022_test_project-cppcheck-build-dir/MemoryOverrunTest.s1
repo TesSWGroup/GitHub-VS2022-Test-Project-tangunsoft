@@ -1,5 +1,0 @@
-arrayBoundsOverrun
-dynamicMemoryOverrun
-stackBufferOverflow call:[strcpy]
-heapBufferOverflow
-stringBufferOverrun call:[strlen]
