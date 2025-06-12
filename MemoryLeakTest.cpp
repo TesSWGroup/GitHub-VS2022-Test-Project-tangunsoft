@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <string>
 #include <vector>
 #include <stdexcept>
@@ -30,12 +30,12 @@ void exceptionMemoryLeak() {
     int* numbers = new int[10];
     
     try {
-        throw std::runtime_error("테스트 예외");
+        throw std::runtime_error("Test exception");
         delete[] numbers; // 이 라인은 실행되지 않음
     }
     catch (const std::exception& e) {
         // 예외 처리 시 메모리 해제를 잊음
-        std::cout << "예외 발생: " << e.what() << std::endl;
+        std::cout << "Exception occurred: " << e.what() << std::endl;
         // Cppcheck: memory leak - numbers가 해제되지 않음
     }
 }
@@ -64,7 +64,7 @@ ResourceManager::~ResourceManager() {
 }
 
 /*int main() {
-    std::cout << "메모리 누수 테스트 시작" << std::endl;
+    std::cout << "Starting memory leak test" << std::endl;
 
     // 각 메모리 누수 시나리오 테스트
     basicMemoryLeak();
@@ -77,6 +77,6 @@ ResourceManager::~ResourceManager() {
         ResourceManager rm;
     } // 스코프를 벗어날 때 소멸자 호출, 하지만 메모리는 해제되지 않음
 
-    std::cout << "메모리 누수 테스트 종료" << std::endl;
+    std::cout << "Memory leak test completed" << std::endl;
     return 0;
 }*/ 

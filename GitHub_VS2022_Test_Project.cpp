@@ -33,6 +33,7 @@ int main()
     std::cout << "GitHub_VS2022_Test_Project!\n";
 	std::cout << "GitHub_Cppcheck_Test_Project!\n";
 	std::cout << "Google_Test_Project!\n";
+	std::cout << "modify uniclode!\n";
 
 	MemoryLeakTest();
 
@@ -75,38 +76,38 @@ int main()
 	std::cout << "Buffer overflow test added using manual loop." << std::endl;
 
 	//===================================================================
-	std::cout << "메모리 누수 테스트 시작" << std::endl;
+	std::cout << "Memory leak test started" << std::endl;
 	std::cout << "----------------------------------------" << std::endl;
 
 	// 각 메모리 누수 시나리오 테스트
-	std::cout << "1. 기본 메모리 누수 테스트" << std::endl;
+	std::cout << "1. Basic memory leak test" << std::endl;
 	basicMemoryLeak();
 	
-	std::cout << "\n2. 조건부 메모리 누수 테스트" << std::endl;
+	std::cout << "\n2. Conditional memory leak test" << std::endl;
 	conditionalMemoryLeak(true);
 	
-	std::cout << "\n3. 예외 처리 메모리 누수 테스트" << std::endl;
+	std::cout << "\n3. Exception handling memory leak test" << std::endl;
 	exceptionMemoryLeak();
 	
-	std::cout << "\n4. 포인터 재할당 메모리 누수 테스트" << std::endl;
+	std::cout << "\n4. Pointer reassignment memory leak test" << std::endl;
 	reassignmentMemoryLeak();
 
-	std::cout << "\n5. 클래스 소멸자 메모리 누수 테스트" << std::endl;
+	std::cout << "\n5. Class destructor memory leak test" << std::endl;
 	{
 		ResourceManager rm;
-		std::cout << "ResourceManager 객체 생성됨" << std::endl;
+		std::cout << "ResourceManager object created" << std::endl;
 	}
-	std::cout << "ResourceManager 객체 소멸됨" << std::endl;
+	std::cout << "ResourceManager object destroyed" << std::endl;
 
-	std::cout << "\n6. 올바른 메모리 관리 예제" << std::endl;
+	std::cout << "\n6. Correct memory management example" << std::endl;
 	correctMemoryManagement();
 
 	std::cout << "\n----------------------------------------" << std::endl;
-	std::cout << "메모리 누수 테스트 종료" << std::endl;
-	std::cout << "프로그램은 정상적으로 종료되지만, Cppcheck로 분석하면 메모리 누수를 발견할 수 있습니다." << std::endl;
+	std::cout << "Memory leak test completed" << std::endl;
+	std::cout << "Program terminated normally, but memory leaks can be detected using Cppcheck." << std::endl;
 	
 	// 메모리 오버런 테스트 실행
-	std::cout << "\n=== 메모리 오버런 테스트 시작 ===\n" << std::endl;
+	std::cout << "\n=== Memory overrun test started ===\n" << std::endl;
 	
 	arrayBoundsOverrun();
 	std::cout << std::endl;
@@ -123,7 +124,7 @@ int main()
 	stringBufferOverrun();
 	std::cout << std::endl;
 	
-	std::cout << "=== 메모리 오버런 테스트 종료 ===\n" << std::endl;
+	std::cout << "=== Memory overrun test completed ===\n" << std::endl;
 
 	return 0;
 }

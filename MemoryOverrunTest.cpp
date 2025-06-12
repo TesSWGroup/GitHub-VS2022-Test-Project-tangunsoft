@@ -1,9 +1,9 @@
-#define _CRT_SECURE_NO_WARNINGS
+﻿#define _CRT_SECURE_NO_WARNINGS
 #include "MemoryOverrunTest.h"
 #include <cstring>
 
 void arrayBoundsOverrun() {
-    std::cout << "배열 범위 초과 접근 테스트 시작\n";
+    std::cout << "Starting array bounds overrun test\n";
     int arr[5] = {1, 2, 3, 4, 5};
     
     // Cppcheck가 감지해야 할 배열 범위 초과 접근
@@ -11,11 +11,11 @@ void arrayBoundsOverrun() {
         arr[i] = i * 2;  // i가 5일 때 배열 범위를 벗어남
     }
     
-    std::cout << "배열 범위 초과 접근 테스트 종료\n";
+    std::cout << "Array bounds overrun test completed\n";
 }
 
 void dynamicMemoryOverrun() {
-    std::cout << "동적 할당 메모리 오버런 테스트 시작\n";
+    std::cout << "Starting dynamic memory overrun test\n";
     int* ptr = new int[10];
     
     // 할당된 크기를 초과하여 메모리 접근
@@ -24,22 +24,22 @@ void dynamicMemoryOverrun() {
     }
     
     delete[] ptr;
-    std::cout << "동적 할당 메모리 오버런 테스트 종료\n";
+    std::cout << "Dynamic memory overrun test completed\n";
 }
 
 void stackBufferOverflow() {
-    std::cout << "스택 버퍼 오버플로우 테스트 시작\n";
+    std::cout << "Starting stack buffer overflow test\n";
     char smallBuffer[5];
     const char* largeString = "This is a very long string";
     
     // 작은 버퍼에 큰 문자열을 복사하여 오버플로우 발생
     strcpy(smallBuffer, largeString);  // 버퍼 크기(5)보다 큰 문자열(23) 복사
     
-    std::cout << "스택 버퍼 오버플로우 테스트 종료\n";
+    std::cout << "Stack buffer overflow test completed\n";
 }
 
 void heapBufferOverflow() {
-    std::cout << "힙 버퍼 오버플로우 테스트 시작\n";
+    std::cout << "Starting heap buffer overflow test\n";
     char* buffer = new char[10];
     
     // 할당된 버퍼 크기를 초과하여 데이터 쓰기
@@ -48,11 +48,11 @@ void heapBufferOverflow() {
     }
     
     delete[] buffer;
-    std::cout << "힙 버퍼 오버플로우 테스트 종료\n";
+    std::cout << "Heap buffer overflow test completed\n";
 }
 
 void stringBufferOverrun() {
-    std::cout << "문자열 버퍼 오버런 테스트 시작\n";
+    std::cout << "Starting string buffer overrun test\n";
     char dest[10];
     const char* source = "This string is too long for destination";
     
@@ -61,5 +61,5 @@ void stringBufferOverrun() {
         dest[i] = source[i];  // 목적지 버퍼 크기(10)를 초과하는 쓰기
     }
     
-    std::cout << "문자열 버퍼 오버런 테스트 종료\n";
+    std::cout << "String buffer overrun test completed\n";
 } 

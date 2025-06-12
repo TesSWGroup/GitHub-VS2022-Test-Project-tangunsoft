@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <iostream>
 
 // 배열 범위 초과 접근 테스트
