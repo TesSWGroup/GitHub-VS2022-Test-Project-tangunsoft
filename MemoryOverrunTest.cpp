@@ -1,6 +1,7 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS
 #include "MemoryOverrunTest.h"
 #include <cstring>
+#include <iostream> 
 
 void arrayBoundsOverrun() {
     std::cout << "Starting array bounds overrun test\n";
